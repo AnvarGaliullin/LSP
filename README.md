@@ -11,7 +11,7 @@ MIPT, Fall 2019.
 
 Copyright © 2019 [Anvar Galiullin]. See [license] for details.
 
-[Arthur Khashaev]: https://khashaev.ru
+[Anvar Galiullin]: https://github.com/AnvarGaliullin
 [license]: LICENSE.txt
 
 [travis-url]: https://travis-ci.org/PPPoSD-Tinkoff/greetings
