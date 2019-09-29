@@ -5,11 +5,11 @@
 from setuptools import setup
 
 setup(
-    name="greetings",
-    version="0.0.0",
-    author="Arthur Khashaev",
-    author_email="arthur@khashaev.ru",
-    url="https://github.com/PPPoSD-2017/greetings",
+    name="Hangman",
+    version="1.0.0",
+    author="Anvar Galiullin",
+    author_email="anvargal@mail.ru",
+    url="https://github.com/AnvarGaliullin/HangMan-Game",
     license="MIT",
     setup_requires=[
         "colorama",
