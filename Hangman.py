@@ -61,6 +61,7 @@ def closing_game(game_result, word_guessed):
         init_game()
     if input_letter == 'n':
         print('Goodbye!')
+        exit()
     if input_letter not in ['y', 'n']:
         exit()
 
