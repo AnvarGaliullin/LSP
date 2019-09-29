@@ -2,8 +2,7 @@
 
 [![Build Status][travis-badge]][travis-url]
 [![Coverage][coverage-image]][coverage-url]
-image:: https://codecov.io/gh/AnvarGaliullin/HangMan-Game/branch/master/graph/badge.svg
-  :target: https://codecov.io/gh/AnvarGaliullin/HangMan-Game
+
 **Hangman** is a simple word-guessing game.
 
 MIPT, Fall 2019.
