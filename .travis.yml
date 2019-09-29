@@ -5,5 +5,10 @@ install:
   - pip install codecov
 before_script:
     pip install colorama
+script:
+  - test_Hangman.py
 after_success:
   - codecov
+
+
+
