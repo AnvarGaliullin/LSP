@@ -5,6 +5,12 @@
 
 **Hangman** is a simple word-guessing game.
 
+## Project commands
+- Hangman.py  (run the game)
+- test_Hangman.py (run tests)
+- pycodestyle.py (code style check)
+
+
 MIPT, Fall 2019.
 
 ## Copyright
