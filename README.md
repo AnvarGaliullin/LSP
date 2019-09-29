@@ -14,7 +14,8 @@ Copyright © 2019 [Anvar Galiullin]. See [license] for details.
 [Anvar Galiullin]: https://github.com/AnvarGaliullin
 [license]: LICENSE.txt
 
-[travis-url]: https://travis-ci.org/PPPoSD-Tinkoff/greetings
-[travis-badge]: https://travis-ci.org/PPPoSD-Tinkoff/greetings.svg?branch=master
+
+[travis-url]: https://travis-ci.com/AnvarGaliullin/HangMan-Game
+[travis-badge]: https://travis-ci.com/AnvarGaliullin/HangMan-Game.svg?branch=master
 [coverage-image]: https://codecov.io/gh/PPPoSD-Tinkoff/greetings/branch/master/graph/badge.svg
 [coverage-url]: https://codecov.io/gh/PPPoSD-Tinkoff/greetings
