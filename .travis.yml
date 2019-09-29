@@ -4,6 +4,7 @@ python:
 install:
   - pip install codecov
   - pip install colorama
+  - pip install pycodestyle
 script:
   - coverage run test_Hangman.py
   - pycodestyle
