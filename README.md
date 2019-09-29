@@ -17,5 +17,5 @@ Copyright © 2019 [Anvar Galiullin]. See [license] for details.
 
 [travis-url]: https://travis-ci.com/AnvarGaliullin/HangMan-Game
 [travis-badge]: https://travis-ci.com/AnvarGaliullin/HangMan-Game.svg?branch=master
-[coverage-image]: https://codecov.io/gh/PPPoSD-Tinkoff/greetings/branch/master/graph/badge.svg
-[coverage-url]: https://codecov.io/gh/PPPoSD-Tinkoff/greetings
+[coverage-image]: https://codecov.io/gh/AnvarGaliullin/HangMan-Game/branch/master/graph/badge.svg
+[coverage-url]: https://codecov.io/gh/AnvarGaliullin/HangMan-Game
