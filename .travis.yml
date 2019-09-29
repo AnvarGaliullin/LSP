@@ -5,6 +5,6 @@ install:
   - pip install codecov
   - pip install colorama
 script:
-  - python test_Hangman.py
+  - coverage run test_Hangman.py
 after_success:
   - codecov
