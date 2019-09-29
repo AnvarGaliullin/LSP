@@ -1,4 +1,3 @@
-import click
 import random
 import re
 import colorama
