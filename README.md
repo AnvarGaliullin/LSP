@@ -12,7 +12,7 @@ MIPT, Fall 2019.
 Copyright © 2019 [Anvar Galiullin]. See [license] for details.
 
 [Anvar Galiullin]: https://github.com/AnvarGaliullin
-[license]: LICENSE.txt
+[license]: LICENSE
 
 
 [travis-url]: https://travis-ci.com/AnvarGaliullin/HangMan-Game
