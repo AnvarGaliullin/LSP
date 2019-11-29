@@ -3,7 +3,7 @@
 [![Build Status][travis-badge]][travis-url]
 [![Coverage][coverage-image]][coverage-url]
 
-**LMS** is a educational system, which is created to make learning process easiser and more comfortable for students and teachers
+**LMS** is an educational system, which is created to make learning process easiser and more comfortable for students and teachers
 
 ## Project commands
 - Hangman.py  (run the game)
