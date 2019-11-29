@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Login</title>
+    <!-- favicon -->
+    <link rel="icon" href="../static/address_book.png" type="image/x-icon">
+    <link rel="shortcut icon" href="../static/address_book.png" type="image/x-icon">
+
+    <style>
+        body,
+        html {
+            height: 100%;
+        }
+
+        .loginform {
+            width: 100%;
+            height: 100%;
+            background: url("../static/Login.jpg");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .loginformunder {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            top: 50%;
+            left: 50%;
+            margin-top: -12.5%;
+            margin-left: -25%;
+
+        }
+
+        @media (max-width: 576px) {
+            .loginformunder {
+                position: absolute;
+                width: 100%;
+                height: 50%;
+                top: 25%;
+                left: 0%;
+                margin-top: 0%;
+                margin-left: 0%;
+            }
+        }
+
+        .rounded {
+            border-radius: 5.0rem !important
+        }
+    </style>
+
+
+</head>
+
+<body>
+<div class="loginform">
+<div class="loginformunder">
+<div class="container rounded bg-light " style="border:1px solid black">
+
+
+<div class="row justify-content-center ">
+    <div class="col-auto">
+        {% for category, message in  get_flashed_messages(with_categories=true) %}
+        <spam class="{{ category }}" style="color: red;">{{ message }}</spam>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="row justify-content-center ">
+    <div class="col-auto">
+        <div class="row justify-content-center">
+            <p class="h1">Авторизация</p>
+        </div>
+    </div>
+</div>
+<br>
+
+<form action="" method="post">
+    {{ form.csrf_token }}
+        <div class="row">
+            <div class="col-4 col-lg-3">
+                <p class="text-lg-right text-center">{{ form.email.label() }}</p>
+            </div>
+            <div class="col-8 col-lg-5">
+                {{ form.email() }}
+            </div>
+            <div class="col-12 col-lg-4">
+                <p class="text-center text-lg-start">
+                    {% if form.email.errors %}
+                    {% for error in form.email.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-4 col-lg-3">
+                <p class="text-lg-right text-center">{{ form.password.label() }}</p>
+            </div>
+            <div class="col-8 col-lg-5">
+                {{ form.password() }}
+            </div>
+            <div class="col-12 col-lg-4">
+                <p class="text-center text-lg-start">
+                    {% if form.password.errors %}
+                    {% for error in form.password.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6 col-lg-3">
+                <p class="text-lg-right text-center">{{ form.remember.label() }}</p>
+            </div>
+            <div class="col-6 col-lg-5">
+                <p class="text-lg-start text-start">{{ form.remember() }}</p>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-4 col-lg-3">
+                <p class="text-lg-right text-center">{{ form.submit() }} </p>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-auto">
+                <a href="/register"><button class="btn btn-sm btn-outline-dark"
+                        type="button">Зарегистрироваться</button></a>
+            </div>
+        </div>
+        <br>
+
+
+</form>
+
+
+</div>
+</div>
+</div>
+</body>
+
+</html>

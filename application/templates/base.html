@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- favicon -->
+    <link rel="icon" href="../static/address_book.png" type="image/x-icon">
+    <link rel="shortcut icon" href="../static/address_book.png" type="image/x-icon">
+    
+    <title>
+        {% block title %}
+
+        {% endblock %} | LMS app
+        
+    </title>
+</head>
+<body>
+
+
+
+    <nav class="navbar bg-light">
+        <div class="container-fluid"></div>
+            <div class="col-6 wrap_images">
+                <img src="static/upper_logo.jpg" class="img-fluid" height="64" width="64"  class="d-inline-block align-top" alt=""> Learning Managment System
+            </div>
+        </div>
+        
+        <ul class="nav justify-content-right">
+            <li class="nav-item mx-1">
+                <a href="/register"><button class="btn btn-outline-primary" type="button">Зарегистрироваться</button></a>
+            </li>
+            {% if current_user.is_authenticated %}
+                <li class="nav-item mx-1">
+                    <a href="/logout"><button class="btn btn-outline-primary" type="button">Выйти</button></a>
+                </li>
+            {% endif %}
+            {% if not current_user.is_authenticated %}
+                <li class="nav-item mx-1">
+                    <a href="/login"><button class="btn btn-outline-primary" type="button">Войти</button></a>
+                </li>
+            {% endif %}
+        </ul>
+        </nav>
+
+
+<!--                 
+    <nav class="navbar navbar-light bg-light">
+  <form class="form-inline">
+    <button class="btn btn-outline-success" type="button">Main button</button>
+    <button class="btn btn-sm align-middle btn-outline-secondary" type="button">Smaller button</button>
+  </form>
+</nav> -->
+    <!-- Навигационная Панель Сверху-->
+    <!-- <ul class="nav nav-pills justify-content-end">
+        <li class="nav-item">
+          <a class="btn btn-sm btn-outline-secondary" href="/login">Войти</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="#">Active</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">Disabled</a>
+        </li>
+      </ul> -->
+
+
+<div class="container">
+    <div class="ml-1 mt-3">
+    <h1>
+        {% block content_title %}
+
+        {% endblock %}
+    </div>
+    </h1>
+    <div class="ml-1">
+        {% block content %}
+
+        {% endblock %}
+    </div>
+</div>
+
+
+</body>
+</html>
