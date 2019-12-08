@@ -12,8 +12,11 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet"/>
 
     <!-- favicon -->
-    <link rel="icon" href="../static/address_book.png" type="image/x-icon">
-    <link rel="shortcut icon" href="../static/address_book.png" type="image/x-icon">
+    <link rel="shortcut icon" href="{{url_for('static', filename='address_book.png') }}">
+    <link rel="icon" href="{{url_for('static', filename='address_book.png') }}">
+    <!-- <link rel="icon" href="../static/address_book.png" type="image/x-icon">
+    <link rel="shortcut icon" href="../static/address_book.png" type="image/x-icon"> -->
+
     
     <title>
         {% block title %}
@@ -36,6 +39,13 @@
     
     </style>
 
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+        
+
 </head>
 <body>
 
@@ -43,7 +53,10 @@
     <nav class="navbar bg-light">
         <div class="container-fluid"></div>
             <div class="col-sm-6 col-12 wrap_images">
-                <img src="/static/upper_logo.jpg" class="img-fluid" height="64" width="64"  class="d-inline-block align-top" alt=""> Learning Managment System
+                <a href="{{ url_for('index') }}">
+                <img src="/static/upper_logo.jpg" class="img-fluid" height="64" width="64"  class="d-inline-block align-top" alt="">
+                </a>
+                <a href="{{ url_for('index') }}"><button class="btn" type="button">Learning Managment System</button></a>
             </div>
         </div>
         

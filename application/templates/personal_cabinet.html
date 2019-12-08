@@ -41,7 +41,7 @@ Personal Cabinet
     {{ render_button(form.submit) }}
     {% endif %}
 
-    {% if (student.id != None) %}
+    {% if (student!=None and student.id != None) %}
     <h3>Информация об обучении:</h3>
     <p></p>
     <div class="container">

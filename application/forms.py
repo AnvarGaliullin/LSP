@@ -38,4 +38,9 @@ class ChangePassword(FlaskForm):
     new_password = StringField("Новый пароль:", validators=[Length(min = 4, max = 25, message = 'Password must be between 4 and 25 characters')], widget=PasswordInput(hide_value=False))
     confirm_new_password = StringField("Подтвердите пароль:", validators=[EqualTo('new_password', message = "Passwords must match")], widget=PasswordInput(hide_value=False))
     submit = SubmitField("Сменить пароль")
+
+class CourseAddMaterialForm(FlaskForm):
+    name = StringField("Название:", validators=[Length(min = 1, message = 'Обязательное поле'), Length(max = 100, message = 'Слишком длинное название')])
+    content = TextAreaField("Содержание:", validators=[Length(min = 1, message = 'Обязательное поле'), Length(max = 10000, message = 'Слишком длинное содержание')])
+    submit = SubmitField("Добавить")
     

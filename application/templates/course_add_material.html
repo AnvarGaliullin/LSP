@@ -1,0 +1,35 @@
+{% extends 'base_course.html' %}
+{% from "_render_field.html" import render_field %}
+{% from "_render_field.html" import render_button %}
+{% block course_title %}
+
+{% endblock %}
+
+
+
+
+
+
+{% block course_content_title %}
+
+{% endblock %}
+
+
+{% block course_content %}
+<br>
+<h4>Добавить материал для курса</h4>
+<p></p>
+<div class="container">
+    <form class="horizontal-form" , method="POST">
+        {{ form.csrf_token }}
+        {{ render_field(form.name) }}
+        {{ render_field(form.content) }}
+        {{ render_button(form.submit) }}
+    </form>
+</div>
+<br>
+
+
+    
+
+{% endblock %}
