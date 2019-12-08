@@ -40,6 +40,13 @@
 
         }
 
+        .alert {
+        position: fixed;
+        max-width: 50%;
+        right: 0;
+        z-index: 7000;
+        }
+
         @media (max-width: 576px) {
             .loginformunder {
                 position: absolute;
@@ -61,18 +68,53 @@
 </head>
 
 <body>
+
+
+
+
 <div class="loginform">
+
+<!-- FLash messages  -->
+<div class="row">
+        <div class="col-sm-4 offset-8">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {%- for category, message in messages %}
+                        <div id="my-alert" class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+                            <span>{{ message }}</span>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor -%}
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script>
+        $(function(){
+            window.setTimeout(function(){
+                $('#my-alert').alert('close');
+            },5000);
+        });
+    </script>
+    <!-- FLash messages end -->
+                
+
 <div class="loginformunder">
+
 <div class="container rounded bg-light " style="border:1px solid black">
 
 
-<div class="row justify-content-center ">
+<!-- <div class="row justify-content-center ">
     <div class="col-auto">
         {% for category, message in  get_flashed_messages(with_categories=true) %}
         <spam class="{{ category }}" style="color: red;">{{ message }}</spam>
         {% endfor %}
     </div>
-</div>
+</div> -->
 
 <div class="row justify-content-center ">
     <div class="col-auto">
@@ -108,7 +150,7 @@
                 <p class="text-lg-right text-center">{{ form.password.label() }}</p>
             </div>
             <div class="col-8 col-lg-5">
-                {{ form.password() }}
+                {{ form.password(autocomplete="off") }}
             </div>
             <div class="col-12 col-lg-4">
                 <p class="text-center text-lg-start">

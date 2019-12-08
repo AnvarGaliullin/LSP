@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% from "_render_field.html" import render_field %}
+{% from "_render_field.html" import render_button %}
+{% from "_render_field.html" import render_icon_field %}
+
+
+
+{% block title %}
+Personal Cabinet
+{% endblock %}
+
+
+{% block content_title %}
+{{user.surname}} {{user.name}} {{user.second_name}}
+{% endblock %}
+
+
+{% block content %}
+<br>
+
+<form class="horizontal-form" , method="POST">
+    {% if watch_only == True %}
+    <fieldset disabled>
+    {% endif %}
+        {{ form.csrf_token }}
+        {{ render_field(form.email, placeholder = user.email, disable=True, hide=watch_only) }}
+        {{ render_field(form.phone, placeholder = user_info.phone, hide=watch_only) }}
+        {{ render_field(form.home_region, placeholder = user_info.home_region, hide=watch_only) }}
+        {{ render_field(form.detailed_description, placeholder = user_info.detailed_description, field_size=10, hide=watch_only) }}
+
+
+        {{ render_icon_field(form.vk, placeholder = user_social_pages.vk, icon = 'vk', hide=watch_only) }}
+        {{ render_icon_field(form.facebook, placeholder = user_social_pages.facebook, icon = 'facebook', hide=watch_only) }}
+        {{ render_icon_field(form.linked_in, placeholder = user_social_pages.linked_in, icon = 'linkedin', hide=watch_only) }}
+        {{ render_icon_field(form.instagram, placeholder = user_social_pages.instagram, icon = 'instagram', hide=watch_only) }}
+    {% if watch_only == True %}
+    </fieldset>
+    {% endif %}
+
+    {% if watch_only == False %}
+    {{ render_button(form.submit) }}
+    {% endif %}
+
+    {% if (student.id != None) %}
+    <h3>Информация об обучении:</h3>
+    <p></p>
+    <div class="container">
+        <div class="row">
+            <div class="col-auto col-sm-2">Учебная группа:</div>
+            <div class="col-auto">{{educational_group_name}}</div>
+        </div>
+        <div class="row">
+            <div class="col-auto col-sm-2">Год поступления:</div>
+            <div class="col-auto">{{student.entry_year}}</div>
+        </div>
+        <div class="row">
+            <div class="col-auto col-sm-2">Степень:</div>
+            <div class="col-auto">{{student.degree}}</div>
+        </div>
+        <div class="row">
+            <div class="col-auto col-sm-2">Форма обучения:</div>
+            <div class="col-auto">{{student.tuition_format}}</div>
+        </div>
+        {% if (user.id == current_user.id) %}
+        <div class="row">
+            <div class="col-auto col-sm-2">Основа обучения:</div>
+            <div class="col-auto">{{student.tuition_base}}</div>
+        </div>
+        {% endif %}
+    </div>
+
+    {% endif %}
+
+
+</form>
+<br>
+<a href="{{ url_for('index') }}"><button class="btn btn-primary" type="button">На главную</button></a>
+{% if watch_only == False %}
+<a href="{{ url_for('change_password') }}"><button class="btn btn-primary" type="button">Сменить пароль</button></a>
+{% endif %}
+<br>
+<br>
+{% endblock %}
