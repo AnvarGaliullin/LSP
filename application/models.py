@@ -108,6 +108,10 @@ class EducationalCourse(db.Model):
     def set_teacher(self, teacher_id):
         self.teacher_id = teacher_id
 
+    def add_course_material(self, material_name, content=''):
+        course_material = CourseMaterial(self.id, material_name, content=content)
+        return course_material
+
     def __repr__(self):
         return "%s(id=\"%s\",course_name=\"%s\")" % (self.__class__.__name__,self.id,self.course_name)
 
@@ -258,6 +262,29 @@ class UserSocialPages(db.Model):
 	    return "<UserSocialPages Info {}:{}>".format(self.id, self.user_id)
 
 
+class CourseMaterial(db.Model):
+    __tablename__ = 'Course_Material'
+    id = db.Column(db.Integer, nullable = False, primary_key=True)
+    course_id = db.Column(db.Integer(), db.ForeignKey('EducationalСourse.id'), nullable = False )
+    name = db.Column(db.String(100), nullable = False)
+    content = db.Column(db.String(10000), nullable = False)
+    created_on = db.Column(db.DateTime(), default=datetime.utcnow)
+    updated_on = db.Column(db.DateTime(), default=datetime.utcnow,  onupdate=datetime.utcnow)
+
+    def __init__(self, course_id, name, content=''):
+        self.course_id = course_id
+        self.name = name
+        self.content = content
+    
+    def set_content(self, content):
+	    self.content = content
+
+    def __repr__(self):
+	    return "<CourseMaterial Info {}:{}>".format(self.id, self.name)
+
+
+
+
 """ ADD TABLE """
 db_base_type = 'postgres'
 db_base_name = 'LMS'
@@ -274,6 +301,14 @@ print('end')
 # https://vk.com/id319329506
 
 """ TEST AREA """
+new_course = db.session.query(EducationalCourse).filter(EducationalCourse.id == 6).first()
+new_material = new_course.add_course_material('Материал №1 другого курса', content='Пишем 1-jt описание материала...')
+
+print('new_material = ',new_material)
+
+# db_add_objects(new_material,new_material2,new_material3,new_material4)
+
+
 # teacher = db.session.query(Teacher).filter(Teacher.user_id == 55).first()
 # print('teacher = ', teacher)
 # print('Пароль регистрации = ', teacher.set_registration_password(password_length = 4))

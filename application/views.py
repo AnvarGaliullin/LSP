@@ -1,11 +1,14 @@
 from application import app#, login_manager
-from flask import render_template, request, redirect, url_for, flash, make_response, session
+from flask import render_template, request, redirect, url_for, flash, make_response, session, abort
 # from sqlalchemy import or_
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, login_user,current_user, logout_user
 from .models import User, UserInfo, UserSocialPages, Student, Teacher, EducationalGroup, EducationalCourse, db, db_add_objects
-from .forms import LoginForm, RegisterForm, PersonalCabinetForm, ChangePassword
+from .forms import LoginForm, RegisterForm, PersonalCabinetForm, ChangePassword, CourseAddMaterialForm
 
+@app.errorhandler(404)
+def error404(error):
+    return '<h1>Ошибка 404</h1><p>К сожалению, такой страницы не существет, либо у вас недостаточно прав для ее просмотра</p>'
 
 @app.route('/', methods=['GET'])
 @login_required
@@ -211,7 +214,12 @@ def change_password():
 def course(course_id):
     active_page = 'course_description'
     course = db.session.query(EducationalCourse).filter(EducationalCourse.id == course_id).first_or_404()
-    return render_template('course.html', active_page=active_page, course=course)
+    query_teacher = db.session.execute('SELECT t1.id as teacher_id, t1.surname, t1.name, t1.second_name FROM users t1 INNER JOIN teachers t2 ON (t2.user_id=t1.id) INNER JOIN "EducationalСourse" t3 ON (t3.teacher_id = t2.user_id)  WHERE t3.id = :course_id  LIMIT 1', {'course_id': course_id})
+    teacher = {}
+    for r in query_teacher:
+        teacher = {'teacher_id':r[0], 'surname':r[1], 'name':r[2], 'second_name':r[3]}
+        print('teacher = ',teacher)
+    return render_template('course.html', active_page=active_page, course=course, teacher=teacher)
 
 
 @app.route('/course/<course_id>/program', methods=['POST', 'GET'])
@@ -220,7 +228,24 @@ def course_program(course_id):
     active_page = 'course_program'
     print('active_page = ',active_page)
     course = db.session.query(EducationalCourse).filter(EducationalCourse.id == course_id).first_or_404()
-    return render_template('course_program.html', active_page=active_page, course=course)
+    
+    can_add_material = False
+    # Условие что студент может редактировать материалы курса
+    # student = db.session.query(Student).filter(Student.id == course_id).first_or_404()
+    teacher = db.session.query(EducationalCourse).filter(EducationalCourse.teacher_id == current_user.id).first()
+    # if (teacher or student):
+    if (teacher):
+        can_add_material = True
+
+
+    query_course_materials = db.session.execute('SELECT t1.id as course_material_id, t1.name, t1.content FROM "Course_Material" t1 INNER JOIN "EducationalСourse" t2 ON (t2.id=t1.course_id)  WHERE t2.id = :course_id ORDER BY t1.created_on desc', {'course_id': course_id})
+    course_materials = []
+    for r in query_course_materials:
+        course_material = {'course_material_id':r[0], 'name':r[1], 'content':r[2]}
+        course_materials.append(course_material)
+    print('course_materials = ',course_materials)
+
+    return render_template('course_program.html', active_page=active_page, course=course, course_materials=course_materials, can_add_material=can_add_material)
 
 
 @app.route('/course/<course_id>/hometasks', methods=['POST', 'GET'])
@@ -232,6 +257,40 @@ def course_hometasks(course_id):
 
 
 
+@app.route('/course/<course_id>/add_material/', methods=['POST', 'GET'])
+@login_required
+def course_add_material(course_id):
+    # Условие что студент может редактировать материалы курса
+    # student = db.session.query(Student).filter(Student.id == course_id).first_or_404()
+    active_page = 'course_program'
+    course = db.session.query(EducationalCourse).filter(EducationalCourse.id == course_id).first_or_404()
+    teacher = db.session.query(EducationalCourse).filter(EducationalCourse.teacher_id == current_user.id).first()
+    # if not (teacher or student):
+    if not (teacher):
+        abort(404)
+    can_add_material = True
+    print('succes you can edit')
+    form = CourseAddMaterialForm()
+
+    if form.validate_on_submit():
+        print('succesful add new material to course ',course.course_name)
+        new_material = course.add_course_material(form.name.data, form.content.data)
+        db_add_objects(new_material)
+        flash("Материал успешно добавлен", 'success')
+        return redirect(url_for('course_program', course_id=course_id))
+    #     if user.check_password(form.old_password.data):
+    #         user.set_password(form.new_password.data)
+    #         db_add_objects(user)
+    #         login_user(user)
+    #         flash("Пароль успешно изменен", 'success')
+    #         return redirect(url_for('personal_cabinet', user_id=user.id))
+    #     flash("Неправильный пароль", 'danger')
+    #     return render_template('change_password.html', form=form, user=user)
+    
+    return render_template('course_add_material.html', course=course, active_page=active_page, form=form, can_add_material=can_add_material)
+    
+
+    
 # @app.route('/user/<username>')
 # @login_required
 # def user(username):

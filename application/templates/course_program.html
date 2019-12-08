@@ -14,7 +14,50 @@
 
 
 {% block course_content %}
-course program
 
+<!--  -->
+{% if can_add_material == True %}
+<div class="container">
+    <p></p>
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-primary" href="{{ url_for('course_add_material', course_id=course.id) }}" data-toggle="tooltip" data-placement="right"
+                title="Добавить материал курса">
+                <i class="fa fa-plus" style="color:white">
+                </i>
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+<!--  -->
+<p></p>
+<div class="accordion" id="accordionExample">
+{% for material in course_materials %}  
+<div class="card">
+    <div class="card-header" id="heading{{loop.index}}">
+        <h2 class="mb-0">
+            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse{{loop.index}}"
+                aria-expanded="true" aria-controls="collapse{{loop.index}}">
+                #{{loop.index}} {{material['name']}}
+            </button>
+        </h2>
+    </div>
+
+    <div id="collapse{{loop.index}}" class="collapse" aria-labelledby="heading{{loop.index}}" data-parent="#accordionExample">
+        <div class="card-body">
+            {{material['content']}}
+        </div>
+    </div>
+</div>
+
+
+{% endfor %}
+
+</div>
+
+
+
+    
 
 {% endblock %}

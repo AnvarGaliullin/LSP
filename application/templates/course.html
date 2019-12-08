@@ -14,7 +14,30 @@
 
 
 {% block course_content %}
-course description
+
+
+<p></p>
+<div class="container">
+    <div class="row">
+            <div class="col-sm-4">
+                <p class="font-weight-bold">Преподаватель курса:</p>
+            </div>
+            <div class="col-sm-8">
+                <a href="{{ url_for('personal_cabinet', user_id=teacher['teacher_id']) }}">
+                    {{teacher['surname']}} {{teacher['name']}} {{teacher['second_name']}}
+                </a>
+            </div>
+        </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <p class="font-weight-bold">Описание курса:</p>
+        </div>
+        <div class="col-sm-8">
+            {{course.course_description}}
+        </div>
+    </div>
+
+</div>
 
 
 {% endblock %}
