@@ -8,6 +8,9 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- Font Awesome -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet"/>
+
     <!-- favicon -->
     <link rel="icon" href="../static/address_book.png" type="image/x-icon">
     <link rel="shortcut icon" href="../static/address_book.png" type="image/x-icon">
@@ -18,34 +21,76 @@
         {% endblock %} | LMS app
         
     </title>
+
+    <style>
+      .alert {
+        position: fixed;
+        max-width: 50%;
+        right: 0;
+        z-index: 7000;
+      }
+      /* Font Awesome Icons */
+      .fa {
+       font-size: 30px;
+      }
+    
+    </style>
+
 </head>
 <body>
 
 
-
     <nav class="navbar bg-light">
         <div class="container-fluid"></div>
-            <div class="col-6 wrap_images">
-                <img src="static/upper_logo.jpg" class="img-fluid" height="64" width="64"  class="d-inline-block align-top" alt=""> Learning Managment System
+            <div class="col-sm-6 col-12 wrap_images">
+                <img src="/static/upper_logo.jpg" class="img-fluid" height="64" width="64"  class="d-inline-block align-top" alt=""> Learning Managment System
             </div>
         </div>
         
         <ul class="nav justify-content-right">
             <li class="nav-item mx-1">
-                <a href="/register"><button class="btn btn-outline-primary" type="button">Зарегистрироваться</button></a>
+                <a href="{{ url_for('personal_cabinet', user_id=current_user.get_id()) }}"><button class="btn btn-outline-primary" type="button">Личный кабинет</button></a>
             </li>
-            {% if current_user.is_authenticated %}
                 <li class="nav-item mx-1">
                     <a href="/logout"><button class="btn btn-outline-primary" type="button">Выйти</button></a>
                 </li>
-            {% endif %}
-            {% if not current_user.is_authenticated %}
-                <li class="nav-item mx-1">
-                    <a href="/login"><button class="btn btn-outline-primary" type="button">Войти</button></a>
-                </li>
-            {% endif %}
         </ul>
         </nav>
+
+
+
+<!-- FLash messages  -->
+<div class="row">
+    <div class="col-sm-4 offset-8">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {%- for category, message in messages %}
+                    <div id="my-alert" class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+                      <span>{{ message }}</span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor -%}
+            {% endif %}
+        {% endwith %}
+    </div>
+</div>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script>
+    $(function(){
+        window.setTimeout(function(){
+            $('#my-alert').alert('close');
+        },5000);
+    });
+</script>
+<!-- FLash messages end -->
+
+
+
+
+
 
 
 <!--                 
@@ -77,12 +122,12 @@
 
 <div class="container">
     <div class="ml-1 mt-3">
-    <h1>
+    <h3>
         {% block content_title %}
 
         {% endblock %}
     </div>
-    </h1>
+    </h3>
     <div class="ml-1">
         {% block content %}
 
@@ -90,6 +135,8 @@
     </div>
 </div>
 
+
+  
 
 </body>
 </html>

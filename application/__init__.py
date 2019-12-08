@@ -7,6 +7,7 @@ from flask_login import LoginManager#, UserMixin, login_required, login_user, cu
 # from forms import LoginForm, RegisterForm
 # from models import User
 from flask_migrate import Migrate, MigrateCommand
+# from application.models import User_Info
 import os, config
 
 
@@ -18,6 +19,10 @@ db = SQLAlchemy(app)
 migrate = Migrate(app,  db)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
+
+
+
+
 from . import views
 
 
