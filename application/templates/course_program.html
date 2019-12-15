@@ -36,17 +36,67 @@
 {% for material in course_materials %}  
 <div class="card">
     <div class="card-header" id="heading{{loop.index}}">
-        <h2 class="mb-0">
             <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse{{loop.index}}"
                 aria-expanded="true" aria-controls="collapse{{loop.index}}">
                 #{{loop.index}} {{material['name']}}
             </button>
-        </h2>
+            
+{% if can_add_material == True %}
+            <a class="btn btn-outline-primary btn-sm" href="{{ url_for('course_edit_material', course_id=course.id, material_id=material['course_material_id']) }}" data-toggle="tooltip" data-placement="right"
+                title="Модифицировать материал курса">
+                <i class="fa fa-edit fa-lg">
+                </i>
+            </a>
+<!-- Кнопка пуска модальное окно -->  
+            <a class="btn btn-outline-danger btn-sm" href="" data-toggle="modal" data-target="#myModal{{loop.index}}" data-toggle="tooltip" data-placement="right"
+                title="Удалить материал курса">
+                <i class="fa fa-trash fa-lg">
+                </i>
+            </a>
+<!-- Модальное окно -->
+<div class="modal fade" id="myModal{{loop.index}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Подтвердите удаление</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                #{{loop.index}} {{material['name']}}
+            </div>
+
+            <div class="modal-footer">
+                <div class="container">
+                    <div class="row justify-content-between">
+                        <div class="col-auto">
+                            <a href="{{ url_for('course_program', course_id=course.id, material_id=material['course_material_id']) }}">
+                                <button type="button" class="btn btn-danger">Удалить</button>
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            <!--  -->
+{% endif %}
+
+
+
+
     </div>
 
     <div id="collapse{{loop.index}}" class="collapse" aria-labelledby="heading{{loop.index}}" data-parent="#accordionExample">
         <div class="card-body">
             {{material['content']}}
+            <p></p><p class="font-weight-light">Добавлено: {{material['created_dttm']}}</p>
         </div>
     </div>
 </div>

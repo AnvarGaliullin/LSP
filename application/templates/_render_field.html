@@ -1,13 +1,13 @@
-{% macro render_field(field, placeholder='', disable=False, field_size=4, hide='True') %}
+{% macro render_field(field, placeholder='', disable=False, field_size=4, hide='True', textarea=False, lines=1) %}
 {% if not (hide == True and (placeholder == '' or placeholder == None or placeholder == 'None')) %}
 
 <div class = "form-group row">
-    <label for="{{field.name}}" class="col-sm-2 col-form-label control-label">{{field.label.text}}</label>
+    <label for="{{field.name}}" class="col-sm-2 col-form-label control-label" >{{field.label.text}}</label>
     <div class="col-sm-{{field_size}}">
         {% if (placeholder == '' or placeholder == None or placeholder == 'None') %}
-        {{field(class="form-control", disabled=disable) }}
+        {{field(class="form-control", disabled=disable,  rows=lines) }}
         {% else %}
-        {{field(class="form-control", value=placeholder, disabled=disable) }}
+        {{field(class="form-control", value=placeholder, disabled=disable,  rows=lines) }}
         {% endif %}
     </div>
     <div class="col-sm">

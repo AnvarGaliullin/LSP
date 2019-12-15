@@ -26,7 +26,7 @@ Personal Cabinet
         {{ render_field(form.email, placeholder = user.email, disable=True, hide=watch_only) }}
         {{ render_field(form.phone, placeholder = user_info.phone, hide=watch_only) }}
         {{ render_field(form.home_region, placeholder = user_info.home_region, hide=watch_only) }}
-        {{ render_field(form.detailed_description, placeholder = user_info.detailed_description, field_size=10, hide=watch_only) }}
+        {{ render_field(form.detailed_description, placeholder = user_info.detailed_description, hide=watch_only, lines=5) }}
 
 
         {{ render_icon_field(form.vk, placeholder = user_social_pages.vk, icon = 'vk', hide=watch_only) }}

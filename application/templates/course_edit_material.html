@@ -17,14 +17,15 @@
 
 {% block course_content %}
 <br>
-<h4>Добавить материал для курса</h4>
+<h4>Модифицировать материал курса</h4>
 <p></p>
 <div class="container">
     <form class="horizontal-form" , method="POST">
         {{ form.csrf_token }}
-        {{ render_field(form.name) }}
-        {{ render_field(form.content, lines=10) }}
+        {{ render_field(form.name, placeholder = material.name) }}
+        {{ render_field(form.content, placeholder = material.content, lines=10) }}
         {{ render_button(form.submit) }}
+        <!-- content = {{form.content.data}} -->
     </form>
 </div>
 <br>
