@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import Form, ValidationError
 from wtforms import StringField, SubmitField, TextAreaField, BooleanField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, InputRequired, Regexp, Optional
-from wtforms.widgets import PasswordInput, TextArea
+from wtforms.widgets import PasswordInput
 import phonenumbers
 
 
@@ -26,7 +26,7 @@ class PersonalCabinetForm(FlaskForm):
     email = StringField("E-mail:")# Валидаторов нет - потому что эту форму пользователь не может редактировать
     phone = StringField('Телефон', validators=[Optional(), Regexp("^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$", message="Некорректный формат телефона")], render_kw={"placeholder": "введите номер телефона"} ) 
     home_region = StringField("Родной город:", validators=[Optional(), Regexp("^[a-zA-Zа-яА-Я-]+$", message="Некорректный город")], render_kw={"placeholder": "введите родной город"})
-    detailed_description = StringField("О себе:", validators=[Length(max = 254, message = 'Описание слишком длинное')], render_kw={"placeholder": "расскажите о себе"} )
+    detailed_description = TextAreaField("О себе:", validators=[Length(max = 254, message = 'Описание слишком длинное')], render_kw={"placeholder": "расскажите о себе"} )
     vk = StringField("vk:", validators=[Optional(), Regexp("^(https?:\/\/)?(www\.)?vk\.com\/(\w|\d)+?\/?$", message="Некорректная ссылка")], render_kw={"placeholder": "ссылка на vk профиль"} )
     facebook = StringField("facebook:", validators=[Optional(), Regexp("http(s)?:\/\/(www\.)?(facebook|fb)\.com\/[A-z0-9_\-\.]+\/?", message="Некорректная ссылка")], render_kw={"placeholder": "ссылка на facebook профиль"} )
     linked_in = StringField("linked_in:", validators=[Optional(), Regexp("http(s)?:\/\/(www\.)?(facebook|fb)\.com\/[A-z0-9_\-\.]+\/?", message="Некорректная ссылка")], render_kw={"placeholder": "ссылка на LinkedIn профиль"} )
@@ -42,5 +42,5 @@ class ChangePassword(FlaskForm):
 class CourseAddMaterialForm(FlaskForm):
     name = StringField("Название:", validators=[Length(min = 1, message = 'Обязательное поле'), Length(max = 100, message = 'Слишком длинное название')])
     content = TextAreaField("Содержание:", validators=[Length(min = 1, message = 'Обязательное поле'), Length(max = 10000, message = 'Слишком длинное содержание')])
-    submit = SubmitField("Добавить")
+    submit = SubmitField("Сохранить")
     
