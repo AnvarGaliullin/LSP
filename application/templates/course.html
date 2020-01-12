@@ -67,7 +67,7 @@
 
             <div class="list-group">
                 {% for person in possible_responsible_persons %} 
-                <a href="{{ url_for('course', course_id=course.id, added_person_id=person['user_id']) }}" class="list-group-item list-group-item-action">
+                <a href="{{ url_for('course', course_id=course.id, added_person_id=person['student_id']) }}" class="list-group-item list-group-item-action">
                 {{person['surname']}} {{person['name']}} {{person['second_name']}}
                 </a>
             {% endfor %}
@@ -141,7 +141,7 @@
                 <div class="container">
                     <div class="row justify-content-between">
                         <div class="col-auto">
-                            <a href="{{ url_for('course', course_id=course.id, deleted_person_id=person['user_id']) }}">
+                            <a href="{{ url_for('course', course_id=course.id, deleted_person_id=person['student_id']) }}">
                                 <button type="button" class="btn btn-danger">Удалить</button>
                             </a>
                         </div>

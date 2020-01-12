@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import Form, ValidationError
 from wtforms import StringField, SubmitField, TextAreaField, BooleanField
-from wtforms.validators import DataRequired, Email, EqualTo, Length, InputRequired, Regexp, Optional
+from wtforms.fields.html5 import DateTimeLocalField
+from wtforms.validators import DataRequired, Email, EqualTo, Length, InputRequired, Regexp, Optional, Required
 from wtforms.widgets import PasswordInput
 import phonenumbers
 
@@ -42,5 +43,27 @@ class ChangePassword(FlaskForm):
 class CourseAddMaterialForm(FlaskForm):
     name = StringField("Название:", validators=[Length(min = 1, message = 'Обязательное поле'), Length(max = 100, message = 'Слишком длинное название')])
     content = TextAreaField("Содержание:", validators=[Length(min = 1, message = 'Обязательное поле'), Length(max = 10000, message = 'Слишком длинное содержание')])
+    submit = SubmitField("Сохранить")
+
+class CourseHometaskForm(FlaskForm):
+    name = StringField("Название:", validators=[Length(min = 1, message = 'Обязательное поле'), Length(max = 100, message = 'Слишком длинное название')])
+    content = TextAreaField("Содержание:", validators=[Length(min = 1, message = 'Обязательное поле'), Length(max = 10000, message = 'Слишком длинное содержание')])
+    start_dttm = DateTimeLocalField("Начало сдачи", format='%Y-%m-%dT%H:%M', validators=[Required()])
+    end_dttm = DateTimeLocalField("Окончание сдачи", format='%Y-%m-%dT%H:%M', validators=[Required()])
+    submit = SubmitField("Сохранить")
+
+    def validate(self):
+        rv = FlaskForm.validate(self)
+        if not rv:
+            return False
+
+        if self.start_dttm.data > self.end_dttm.data:
+            self.start_dttm.errors.append('Начало сдачи должно быть до дедлайна')
+            return False
+
+        return True
+
+class StudentHometaskForm(FlaskForm):
+    content = TextAreaField("Решение:", validators=[Length(min = 1, message = 'Обязательное поле'), Length(max = 100000, message = 'Слишком длинное решение')])
     submit = SubmitField("Сохранить")
     

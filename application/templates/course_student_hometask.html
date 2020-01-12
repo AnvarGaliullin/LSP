@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% from "_render_field.html" import render_field %}
+{% from "_render_field.html" import render_button %}
+
+
+{% block title %}
+Hometask
+{% endblock %}
+
+
+{% block content_title %}
+{{hometask.name}}
+{% endblock %}
+
+
+{% block content %}
+<b>Задание:</b> {{hometask.content}}
+<br>
+<p class="font-weight-light">Дедлайн: {{deadline}}</p>
+<p></p>
+<b>Решение студента ({{user_student.surname}} {{user_student.name}} {{user_student.second_name}}):</b>
+<br>
+<div class="row">
+    <div class="col-sm-8">
+<div class="card">
+    <div class="card-body">
+        {{student_hometask.content}}
+    </div>
+  </div>
+  </div>
+  </div>
+{% endblock %}
