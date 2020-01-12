@@ -88,14 +88,13 @@ class EducationalGroup(db.Model):
     def __repr__(self):
 	    return "%s(id=\"%s\",group_name=\"%s\")" % (self.__class__.__name__,self.id,self.group_name)
 
-
 class EducationalCourse(db.Model):
     __tablename__ = 'EducationalСourse'
     id = db.Column(db.Integer, primary_key=True)
     course_name = db.Column(db.String(250), nullable=False, unique = True)
     course_description = db.Column(db.String(250), nullable=False)
     children = db.relationship("AssociationCourseGroup", back_populates="parent")
-    teacher_id = db.Column(db.Integer(), db.ForeignKey('teachers.user_id'))
+    teacher_id = db.Column(db.Integer(), db.ForeignKey('teachers.id'))
 
     def __init__(self, course_name, course_description, teacher_id = None):
         self.course_name = course_name
@@ -127,6 +126,10 @@ class EducationalCourse(db.Model):
         person.set_active_flg(0)
         return person
 
+    def add_hometask(self, name, content, start_dttm, end_dttm):
+        course_hometask = CourseHometask(self.id, name, content, start_dttm, end_dttm)
+        return course_hometask
+
     def __repr__(self):
         return "%s(id=\"%s\",course_name=\"%s\")" % (self.__class__.__name__,self.id,self.course_name)
 
@@ -157,22 +160,26 @@ class User(db.Model, UserMixin):
         self.surname = surname
         self.second_name = second_name
         # Говнокод - надо придумать как поправить
-        if 1==2:
-            db_add_objects(self)
-            user_info = UserInfo(self.id)
-            user_social_pages = UserSocialPages(self.id)
-            db_add_objects(user_info, user_social_pages)
-            print('Новый юзер и доп инфо о юзере успешно созданы!')
+        # if 1==2:
+        #     db_add_objects(self)
+        #     user_info = UserInfo(self.id)
+        #     user_social_pages = UserSocialPages(self.id)
+        #     db_add_objects(user_info, user_social_pages)
+        #     print('Новый юзер и доп инфо о юзере успешно созданы!')
         #Additional info about user, should be created when user created
     
-    # @staticmethod
-    # def create_user(name, surname, second_name):
-    #     print('Я статический метод')
-    #     user = User(name, surname, second_name)
-    #     user_info = UserInfo(user.id)
-    #     user_social_pages = UserSocialPages(user.id)
-    #     print('Я создал: ',user,' ',user_info,' ',user_social_pages)
-    #     return user, user_info, user_social_pages
+    @staticmethod
+    def create_user(name, surname, second_name):
+        print('Я статический метод класса Юзер')
+        user = User(name, surname, second_name)
+        db_add_objects(user)
+        print('Сначала создали юзера = ', user)
+        user_info = UserInfo(user.id)
+        user_social_pages = UserSocialPages(user.id)
+        db_add_objects(user_info, user_social_pages)
+        print('Я создал: ',user,' ',user_info,' ',user_social_pages)
+        return user
+
 
     def __repr__(self):
 	    return "<{}:{}>".format(self.id, self.name + ' ' + self.surname)
@@ -198,24 +205,10 @@ class User(db.Model, UserMixin):
         return registration_password
 
 
-# class UserSocialPages(db.Model):
-#     __tablename__ = 'User_Social_Pages'
-#     id = db.Column(db.Integer, nullable = False, primary_key=True)
-#     user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable = False, unique = True )
-#     vk = db.Column(db.String(100))
-#     facebook = db.Column(db.String(100))
-#     linked_in = db.Column(db.String(100))
-#     instagram = db.Column(db.String(100))
-
-#     def __init__(self, user_id):
-#         self.user_id = user_id
-    
-#     def set_vk_page(self, vk):
-# 	    self.vk = vk
-
-class Student(db):
+class Student(db.Model):
     __tablename__ = 'students'
-    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable = False, unique = True)
     educational_group_id = db.Column(db.Integer(), db.ForeignKey('EducationalGroup.id'), nullable = False)
     entry_year = db.Column(db.Integer(), nullable = False)
     degree = db.Column(db.String(100), nullable = False)
@@ -227,27 +220,51 @@ class Student(db):
     db.CheckConstraint(tuition_base.in_(["контрактная", "бюджетная"])),
     ) 
 
-    def __init__(self, name, surname, second_name, educational_group_id, entry_year, degree, tuition_format, tuition_base):
-        super().__init__(name, surname, second_name)
+    def __init__(self, user_id, educational_group_id, entry_year, degree, tuition_format, tuition_base):
+        self.user_id = user_id
         self.educational_group_id = educational_group_id
         self.entry_year = entry_year
         self.degree = degree
         self.tuition_format = tuition_format
         self.tuition_base = tuition_base
 
+    @staticmethod
+    def create_student(name, surname, second_name, educational_group_id, entry_year, degree, tuition_format, tuition_base):
+        print('Я статический метод класса Студент')
+        user = User.create_user(name, surname, second_name)
+        print('Создали юзера: ', user)
+        student = Student(user_id = user.id, educational_group_id=educational_group_id, entry_year=entry_year, degree=degree, tuition_format=tuition_format, tuition_base=tuition_base)
+        print('Студент = ',student)
+        print('user_id = ',user.id)
+        db_add_objects(student)
+        print('Создали студента: ', student)
+        return student
+
     def __repr__(self):
-	    return "<Student {}:{}>".format(self.id, self.name + ' ' + self.surname)
+	    return "<Student {}:educational_group_id:{}>".format(self.id, self.educational_group_id)
 
 
-class Teacher(User):
+class Teacher(db.Model):
     __tablename__ = 'teachers'
-    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable = False, unique = True)
 
-    def __init__(self, name, surname, second_name):
-        super().__init__(name, surname, second_name)
+    def __init__(self, user_id):
+        self.user_id = user_id
+
+    @staticmethod
+    def create_teacher(name, surname, second_name):
+        print('Я статический метод класса Учитель')
+        user = User.create_user(name, surname, second_name)
+        print('Создали юзера: ', user)
+        teacher = Teacher(user_id=user.id)
+        print('user_id = ',user.id)
+        db_add_objects(teacher)
+        print('Создали учителя: ', teacher)
+        return teacher
 
     def __repr__(self):
-	    return "<Teacher {}:{}>".format(self.id, self.name + ' ' + self.surname)
+	    return "<Teacher {}: user_id{}>".format(self.id, self.user_id)
 
 
 class UserInfo(db.Model):
@@ -326,12 +343,11 @@ class CourseMaterial(db.Model):
     def __repr__(self):
 	    return "<CourseMaterial Info {}:{}>".format(self.id, self.name)
 
-
 class CourseResponsiblePerson(db.Model):
     __tablename__ = 'Course_Responsible_Person'
     id = db.Column(db.Integer, nullable = False, primary_key=True)
     course_id = db.Column(db.Integer(), db.ForeignKey('EducationalСourse.id'), nullable = False )
-    person_id = db.Column(db.Integer(), db.ForeignKey('students.user_id'), nullable = False )
+    person_id = db.Column(db.Integer(), db.ForeignKey('students.id'), nullable = False )
     is_active = db.Column(db.Integer )
     created_on = db.Column(db.DateTime(), default=datetime.utcnow)
     updated_on = db.Column(db.DateTime(), default=datetime.utcnow,  onupdate=datetime.utcnow)
@@ -354,6 +370,57 @@ class CourseResponsiblePerson(db.Model):
 	    return "<CourseResponsiblePerson Info {}:{}:{}>".format(self.id, self.course_id, self.person_id)
 
 
+class CourseHometask(db.Model):
+    __tablename__ = 'course_hometask'
+    id = db.Column(db.Integer, nullable = False, primary_key=True)
+    course_id = db.Column(db.Integer(), db.ForeignKey('EducationalСourse.id'), nullable = False )
+    name = db.Column(db.String(100), nullable = False)
+    content = db.Column(db.String(10000), nullable = False)
+    start_dttm = db.Column(db.DateTime(), nullable = False)
+    end_dttm = db.Column(db.DateTime(), nullable = False)
+    created_on = db.Column(db.DateTime(), default=datetime.utcnow)
+    updated_on = db.Column(db.DateTime(), default=datetime.utcnow,  onupdate=datetime.utcnow)
+    deleted = db.Column(db.Integer() )
+
+    def __init__(self, course_id, name, content, start_dttm, end_dttm):
+        self.course_id = course_id
+        self.name = name
+        self.content = content
+        self.start_dttm = start_dttm
+        self.end_dttm = end_dttm
+        self.deleted = 0
+    
+    def set_content(self, content):
+	    self.content = content
+
+    def delete(self):
+        self.deleted = 1
+    
+    def __repr__(self):
+	    return "<CourseHometask Info {}:{}:{}>".format(self.id, self.course_id, self.name)
+
+
+class StudentHometask(db.Model):
+    __tablename__ = 'student_hometask'
+    id = db.Column(db.Integer, nullable = False, primary_key=True)
+    course_hometask_id = db.Column(db.Integer(), db.ForeignKey('course_hometask.id'), nullable = False )
+    student_id = db.Column(db.Integer(), db.ForeignKey('students.id'), nullable = False )
+    content = db.Column(db.String(100000), nullable = False)
+    created_on = db.Column(db.DateTime(), default=datetime.utcnow)
+    updated_on = db.Column(db.DateTime(), default=datetime.utcnow,  onupdate=datetime.utcnow)
+    __table_args__ = (db.UniqueConstraint('course_hometask_id', 'student_id', name='_course_hometask_student_uniq_const'),)
+
+    def __init__(self, course_hometask_id, student_id, content):
+        self.course_hometask_id = course_hometask_id
+        self.student_id = student_id
+        self.content = content
+    
+    def set_content(self, content):
+	    self.content = content
+
+    def __repr__(self):
+	    return "<StudentHometask Info {}:{}:{}>".format(self.id, self.student_id, self.course_hometask_id)
+
 
 """ ADD TABLE """
 db_base_type = 'postgres'
@@ -371,10 +438,66 @@ print('end')
 # https://vk.com/id319329506
 
 """ TEST AREA """
-new_course = db.session.query(EducationalCourse).filter(EducationalCourse.id == 6).first()
-new_material = new_course.add_course_material('Материал №1 другого курса', 'Пишем 1-jt описание материала...')
+ivan = db.session.query(User).filter(User.id == 106).first()
+print('reg_password = ', ivan.set_registration_password(password_length = 4))
 
-print('new_material = ',new_material)
+# hometask = CourseHometask(course_id=12, name='Hometask 1', content = 'content', start_dttm='10-01-2019 00:00:00', end_dttm='10-01-2020 00:00:00')
+# print('created hometask = ',hometask)
+
+
+# new_group = db.session.query(EducationalGroup).filter(EducationalGroup.id == 22).first()
+# print('new_group = ',new_group)
+
+# course = db.session.query(EducationalCourse).filter(EducationalCourse.id == 12).first()
+# course.add_group(new_group)
+# print('course = ',course)
+
+
+
+
+# new_student = Student.create_student(name='Паша2', surname='Тестовый', second_name='Тестович', educational_group_id=22, entry_year=2016, degree='бакалавр', tuition_format='очная', tuition_base='бюджетная')
+# db_add_objects(course)
+# association = AssociationCourseGroup(course_id=12, group_id=1, is_active = 1, extra_data = '')
+# db_add_objects(association)
+
+# new_student = Student.create_student(name='Ваня', surname='Тестовый', second_name='Тестович', educational_group_id=1, entry_year=2016, degree='бакалавр', tuition_format='очная', tuition_base='бюджетная')
+
+# db_add_objects(new_student)
+
+# teacher = db.session.query(Teacher).filter(Teacher.user_id == 100).first()
+# user_teacher = db.session.query(User).filter(User.id == 100).first()
+# print('set reg pass = ', user_teacher.set_registration_password())
+# db_add_objects(user_teacher)
+# course1 = db.session.query(EducationalCourse).filter(EducationalCourse.id == 11).first()
+# course2 = db.session.query(EducationalCourse).filter(EducationalCourse.id == 12).first()
+# print('teacher.id = ',teacher.id)
+# course1.set_teacher(teacher.id)
+# course2.set_teacher(teacher.id)
+# db_add_objects(course1,course2)
+
+# course = EducationalCourse("test_course_1", "usual edu course")
+# course2 = EducationalCourse("Тестовый курс по физике", "Какое-то описание тестового курса по физике")
+# course3 = EducationalCourse("Тестовый курс по математике", "Какое-то описание тестового курса по математике")
+# course4 = EducationalCourse("Тестовый курс по информатике", "Какое-то описание тестового курса по информатике")
+# db_add_objects(course,course2,course3,course4)
+# association1 = AssociationCourseGroup(9, 15)
+# association2 = AssociationCourseGroup(10, 1)
+# association3 = AssociationCourseGroup(10, 15)
+# association4 = AssociationCourseGroup(11, 1)
+# association5 = AssociationCourseGroup(11, 15)
+# db_add_objects(association1,association2,association3,association4,association5)
+# new_user = User.create_user('удали1', 'удали1', 'удали3')
+# new_student = Student.create_student('удали1', 'удали1', 'удали3', educational_group_id = 1, entry_year=2018, degree = "бакалавр", tuition_format = "очная", tuition_base = "бюджетная")
+# new_teacher = Teacher.create_teacher('удали1', 'удали11', 'удали3')
+# student = Student(user_id = 100, educational_group_id = 1, entry_year=2018, degree = "бакалавр", tuition_format = "очная", tuition_base = "бюджетная")
+# print('Студент = ',new_student)
+# print('new_teacher = ',new_teacher)
+# db_add_objects(new_teacher)
+   
+    # new_course = db.session.query(EducationalCourse).filter(EducationalCourse.id == 6).first()
+    # new_material = new_course.add_course_material('Материал №1 другого курса', 'Пишем 1-jt описание материала...')
+
+    # print('new_material = ',new_material)
 
 # db_add_objects(new_material,new_material2,new_material3,new_material4)
 
@@ -383,14 +506,14 @@ print('new_material = ',new_material)
 # new_resp_person_3 = CourseResponsiblePerson(7, 43)
 
 # new_student = Student(name='Студенчес', surname='Студенческий', second_name='Студенчев', educational_group_id = 1, entry_year=2018, degree = "бакалавр", tuition_format = "очная", tuition_base = "бюджетная")
-new_student=db.session.query(Student).filter(Student.user_id == 59).first()
-course = db.session.query(EducationalCourse).filter(EducationalCourse.id == 7).first()
-print('new_student.user_id = ',new_student.user_id)
-association = course.add_responsible_person(new_student.user_id)
+    # new_student=db.session.query(Student).filter(Student.user_id == 59).first()
+    # course = db.session.query(EducationalCourse).filter(EducationalCourse.id == 7).first()
+    # print('new_student.user_id = ',new_student.user_id)
+    # association = course.add_responsible_person(new_student.user_id)
 # association = course.remove_responsible_person(new_student.user_id)
 
-print('association = ', association)
-test_student = Student(name ='Вася', surname='Пупкин', second_name='Тестович', educational_group_id = 15, entry_year=2017, degree = "магистр", tuition_format = "очная", tuition_base = "бюджетная")
+    # print('association = ', association)
+    # test_student = Student(name ='Вася', surname='Пупкин', second_name='Тестович', educational_group_id = 15, entry_year=2017, degree = "магистр", tuition_format = "очная", tuition_base = "бюджетная")
 # db_add_objects(test_student)
 
 # new_user = User.create_user('name', 'surname', 'second name')
