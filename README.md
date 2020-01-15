@@ -13,11 +13,11 @@
 - pycodestyle.py (code style check)
 
 
-MIPT, Winter 2019.
+MIPT, Winter 2020.
 
 ## Copyright
 
-Copyright © 2019 [Anvar Galiullin]. See [license] for details.
+Copyright © 2020 [Anvar Galiullin]. See [license] for details.
 
 [Anvar Galiullin]: https://github.com/AnvarGaliullin
 [license]: LICENSE
