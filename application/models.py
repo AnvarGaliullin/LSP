@@ -1,15 +1,3 @@
-# from sqlalchemy import db.Column, String, db.Integer, create_engine, ForeignKey, DateTime, or_
-# from sqlalchemy.orm import sessionmaker, relationship
-# from sqlalchemy.ext.declarative import declarative_base
-# from sqlalchemy.exc import SQLAlchemyError
-# from datetime import datetime, date, time
-# from flask_login import UserMixin
-# from werkzeug.security import generate_password_hash,  check_password_hash
-# import random
-# import string
-
-
-
 from application import db, login_manager
 from datetime import datetime
 from flask_login import LoginManager, UserMixin, login_required, login_user, current_user, logout_user
@@ -20,17 +8,27 @@ from sqlalchemy import MetaData, create_engine
 from sqlalchemy.exc import SQLAlchemyError
 from flask import flash
 
-#..
 def db_add_objects(*objects):
     try:
         db.session.add_all(objects)
         db.session.commit()
-        print('added objects:',*objects,' to db')
+        # print('added objects:',*objects,' to db')
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         flash( ("Возникла ошибка:\n" + error), 'error')
         print("Возникла ошибка:\n" + error)
 #     print('Возникла ошибка:\n', error)
+
+def db_delete_objects(*objects):
+    try:
+        db.session.delete(objects)
+        db.session.commit()
+        # print('added objects:',*objects,' to db')
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        flash( ("Возникла ошибка:\n" + error), 'error')
+        print("Возникла ошибка:\n" + error)
+
 
 
 
@@ -59,7 +57,6 @@ class AssociationCourseGroup(db.Model):
     def associate_course_with_group(self):
         association = db.session.query(AssociationCourseGroup).filter(AssociationCourseGroup.course_id == self.course_id).filter(AssociationCourseGroup.group_id == self.group_id).first()
         if association != None:
-            print('association updated')
             if (self.is_active != association.is_active):
                 association.is_active = self.is_active
                 db.session.commit()
@@ -67,7 +64,6 @@ class AssociationCourseGroup(db.Model):
                 association.extra_data = self.extra_data
                 db.session.commit()
         else:
-            print('association created')
             db.session.add(self)
             db.session.commit()
 
@@ -112,7 +108,6 @@ class EducationalCourse(db.Model):
         course_material = CourseMaterial(self.id, material_name, content)
         return course_material
 
-
     def add_responsible_person(self, person_id):
         person = db.session.query(CourseResponsiblePerson).filter(CourseResponsiblePerson.person_id == person_id).filter(CourseResponsiblePerson.course_id == self.id).first()
         if person:
@@ -141,7 +136,7 @@ def load_user(user_id):
     except:
         return None
     
-# , UserMixin
+
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer(), primary_key=True)
@@ -159,26 +154,19 @@ class User(db.Model, UserMixin):
         self.name = name
         self.surname = surname
         self.second_name = second_name
-        # Говнокод - надо придумать как поправить
-        # if 1==2:
-        #     db_add_objects(self)
-        #     user_info = UserInfo(self.id)
-        #     user_social_pages = UserSocialPages(self.id)
-        #     db_add_objects(user_info, user_social_pages)
-        #     print('Новый юзер и доп инфо о юзере успешно созданы!')
-        #Additional info about user, should be created when user created
     
     @staticmethod
     def create_user(name, surname, second_name):
-        print('Я статический метод класса Юзер')
         user = User(name, surname, second_name)
         db_add_objects(user)
         print('Сначала создали юзера = ', user)
         user_info = UserInfo(user.id)
         user_social_pages = UserSocialPages(user.id)
         db_add_objects(user_info, user_social_pages)
-        print('Я создал: ',user,' ',user_info,' ',user_social_pages)
+        print('Затем создали: ',user,' ',user_info,' ',user_social_pages)
         return user
+
+
 
 
     def __repr__(self):
@@ -230,14 +218,9 @@ class Student(db.Model):
 
     @staticmethod
     def create_student(name, surname, second_name, educational_group_id, entry_year, degree, tuition_format, tuition_base):
-        print('Я статический метод класса Студент')
         user = User.create_user(name, surname, second_name)
-        print('Создали юзера: ', user)
         student = Student(user_id = user.id, educational_group_id=educational_group_id, entry_year=entry_year, degree=degree, tuition_format=tuition_format, tuition_base=tuition_base)
-        print('Студент = ',student)
-        print('user_id = ',user.id)
         db_add_objects(student)
-        print('Создали студента: ', student)
         return student
 
     def __repr__(self):
@@ -254,13 +237,9 @@ class Teacher(db.Model):
 
     @staticmethod
     def create_teacher(name, surname, second_name):
-        print('Я статический метод класса Учитель')
         user = User.create_user(name, surname, second_name)
-        print('Создали юзера: ', user)
         teacher = Teacher(user_id=user.id)
-        print('user_id = ',user.id)
         db_add_objects(teacher)
-        print('Создали учителя: ', teacher)
         return teacher
 
     def __repr__(self):
@@ -343,6 +322,7 @@ class CourseMaterial(db.Model):
     def __repr__(self):
 	    return "<CourseMaterial Info {}:{}>".format(self.id, self.name)
 
+
 class CourseResponsiblePerson(db.Model):
     __tablename__ = 'Course_Responsible_Person'
     id = db.Column(db.Integer, nullable = False, primary_key=True)
@@ -360,11 +340,6 @@ class CourseResponsiblePerson(db.Model):
     
     def set_active_flg(self, is_active):
 	    self.is_active = is_active
-
-    # def add(self, person_id):
-    #     person = db.session.query(CourseResponsiblePerson).filter(CourseResponsiblePerson.id == person_id).filter(EducationalСourse.id == self.id).first()
-    #     person.set_active_flg(0)
-    #     return person
 
     def __repr__(self):
 	    return "<CourseResponsiblePerson Info {}:{}:{}>".format(self.id, self.course_id, self.person_id)
@@ -429,17 +404,38 @@ db_base_password = '1234567890Aa'
 db_path = db_base_type+'://'+db_base_type+':'+db_base_password+'@localhost/'+db_base_name
 engine = create_engine(db_base_type+'://'+db_base_type+':'+db_base_password+'@localhost/'+db_base_name)
 meta = MetaData()
-# meta.create_all(engine)
-# db.create_all()
-# db.session.commit()
-print('end')
 
 # User_Info.__table__.drop(engine)
-# https://vk.com/id319329506
 
 """ TEST AREA """
-ivan = db.session.query(User).filter(User.id == 106).first()
-print('reg_password = ', ivan.set_registration_password(password_length = 4))
+# ivan = db.session.query(User).filter(User.id == 106).first()
+# print('reg_password = ', ivan.set_registration_password(password_length = 4))
+# new_student = Student.create_student(name='Паша2', surname='Тестовый', second_name='Тестович', educational_group_id=22, entry_year=2016, degree='бакалавр', tuition_format='очная', tuition_base='бюджетная')
+    # course = db.session.query(EducationalCourse).filter(EducationalCourse.id == 12).first()
+    # group = db.session.query(EducationalGroup).filter(EducationalGroup.id == 15).first()
+    # course.add_group(group)
+# db_add_objects(course)
+# new_student = Student.create_student(name='Андрей_1', surname='Андреев', second_name='Андреевич', educational_group_id=15, entry_year=2017, degree='бакалавр', tuition_format='очная', tuition_base='бюджетная')
+# new_student2 = Student.create_student(name='Андрей_2', surname='Андреев', second_name='Андреевич', educational_group_id=1, entry_year=2014, degree='магистр', tuition_format='вечерняя', tuition_base='бюджетная')
+# new_student3 = Student.create_student(name='Андрей_3', surname='Андреев', second_name='Андреевич', educational_group_id=22, entry_year=2017, degree='бакалавр', tuition_format='очная', tuition_base='бюджетная')
+
+# db_add_objects(new_student, new_student2, new_student3)
+
+# new_student2 = Student.create_student(name='Сергей', surname='Тестовый', second_name='Сергеевич', educational_group_id=22, entry_year=2017, degree='бакалавр', tuition_format='вечерняя', tuition_base='бюджетная')
+    # user = db.session.query(User).filter(User.id == 118).first()
+    # print('password = ', user.set_registration_password(password_length=10))
+    # db_add_objects(user)
+
+# db_add_objects(new_student, new_student2)
+
+# teacher = Teacher.create_teacher('Петров', 'Петр', 'Предрегистрович')
+# db_add_objects(teacher)
+# user = db.session.query(User).filter(User.id == 123).first()
+# print('password = ', user.set_registration_password(password_length=4))
+# db_add_objects(user)
+# session.delete(obj)
+
+
 
 # hometask = CourseHometask(course_id=12, name='Hometask 1', content = 'content', start_dttm='10-01-2019 00:00:00', end_dttm='10-01-2020 00:00:00')
 # print('created hometask = ',hometask)
@@ -493,234 +489,3 @@ print('reg_password = ', ivan.set_registration_password(password_length = 4))
 # print('Студент = ',new_student)
 # print('new_teacher = ',new_teacher)
 # db_add_objects(new_teacher)
-   
-    # new_course = db.session.query(EducationalCourse).filter(EducationalCourse.id == 6).first()
-    # new_material = new_course.add_course_material('Материал №1 другого курса', 'Пишем 1-jt описание материала...')
-
-    # print('new_material = ',new_material)
-
-# db_add_objects(new_material,new_material2,new_material3,new_material4)
-
-# new_resp_person_1 = CourseResponsiblePerson(7, 39)
-# new_resp_person_2 = CourseResponsiblePerson(7, 42)
-# new_resp_person_3 = CourseResponsiblePerson(7, 43)
-
-# new_student = Student(name='Студенчес', surname='Студенческий', second_name='Студенчев', educational_group_id = 1, entry_year=2018, degree = "бакалавр", tuition_format = "очная", tuition_base = "бюджетная")
-    # new_student=db.session.query(Student).filter(Student.user_id == 59).first()
-    # course = db.session.query(EducationalCourse).filter(EducationalCourse.id == 7).first()
-    # print('new_student.user_id = ',new_student.user_id)
-    # association = course.add_responsible_person(new_student.user_id)
-# association = course.remove_responsible_person(new_student.user_id)
-
-    # print('association = ', association)
-    # test_student = Student(name ='Вася', surname='Пупкин', second_name='Тестович', educational_group_id = 15, entry_year=2017, degree = "магистр", tuition_format = "очная", tuition_base = "бюджетная")
-# db_add_objects(test_student)
-
-# new_user = User.create_user('name', 'surname', 'second name')
-# user = new_user[0]
-# user_info = new_user[1]
-# user_social_pages = new_user[2]
-
-# print('new user = ',new_user)
-# print('user = ',user)
-# print('user_info = ',user_info)
-# print('user_social_pages = ',user_social_pages)
-
-
-# db_add_objects(user,user_info,user_social_pages)
-    # @staticmethod
-    # def create_user(name, surname, second_name):
-    #     print('Я статический метод')
-    #     user = User(name, surname, second_name)
-    #     user_info = UserInfo(user.id)
-    #     user_social_pages = UserSocialPages(user.id)
-    #     return user, user_info, user_social_pages
-# db_add_objects(association)
-# teacher = db.session.query(Teacher).filter(Teacher.user_id == 55).first()
-# print('teacher = ', teacher)
-# print('Пароль регистрации = ', teacher.set_registration_password(password_length = 4))
-# db_add_objects(teacher)
-# teacher = Teacher('Препод_1', 'Тестовый', 'Тестович')
-# teacher2 = Teacher('Препод_2', 'Тестовый', 'Тестович')
-# print('two teachers added')
-
-# new_course = EducationalCourse('Тестовый курс по информатике', 'Какое-то описание тестового курса по информатике')
-# db_add_objects(new_course)
-
-# teacher = db.session.query(Teacher).filter(Teacher.user_id == 55).first()
-# new_course = db.session.query(EducationalCourse).filter(EducationalCourse.id == 7).first()
-# new_course2 = db.session.query(EducationalCourse).filter(EducationalCourse.id == 8).first()
-# new_course.set_teacher(teacher.id)
-# new_course2.set_teacher(teacher.id)
-# db_add_objects(new_course,new_course2)
-
-# print('new_course = ',new_course,'  has added')
-
-# new_course = db.session.query(EducationalCourse).filter(EducationalCourse.id == 7).first()
-# group = db.session.query(EducationalGroup).filter(EducationalGroup.id == 1).first()
-# group_2 = db.session.query(EducationalGroup).filter(EducationalGroup.id == 15).first()
-# new_course.add_group(group)
-# new_course.add_group(group_2)
-# print('added 2 groups')
-
-
-
-
-# test_registration_user = db.session.query(User).filter(User.id == 23).first()
-# print('test_registration_user = ', test_registration_user)
-# print(test_registration_user.set_registration_password(password_length = 4))
-# db_add_objects(test_registration_user)
-
-# user_info = User_Info(1)
-# db_add_objects(user_info)
-
-# test_user_3 = Student(educational_group_id = 1, entry_year=2018, degree = "бакалавр", tuition_format = "очная", tuition_base = "бюджетная")
-# db_add_objects(test_user_3)
-# print('dict = ', test_user_3.__dict__)
-
-# test_user_4 =  User(name='Тестов',surname='Тест',second_name='4')
-
-
-
-
-# test_user_2 =  Student(name='Студент5',surname='Тестовый',second_name='5'
-# ,educational_group_id = 1, entry_year=2018, degree = "бакалавр", tuition_format = "очная", tuition_base = "бюджетная")
-# db_add_objects(test_user_2)
-# user_id = test_user_2.id
-# print('user id = ', user_id)
-# user_info = UserInfo(user_id)
-# user_social_pages = UserSocialPages(user_id)
-# # user_info = db.session.query(UserInfo).filter(UserInfo.user_id == user_id).first()
-# # user_social_pages = db.session.query(UserSocialPages).filter(UserSocialPages.user_id == user_id).first()
-# print('Пароль для регистрации: ', test_user_2.set_registration_password(password_length = 4))
-# print('Создание нового студента:' , test_user_2)
-# db_add_objects(user_info, user_social_pages)
-
-
-# test_user_2.set_email('a@mail.ru')
-# print(test_user_2.email)
-# User
-# test_user_2.set_vk_page = 'assd'
-
-
-
-
-# db_add_objects(test_user_2)
-# test_user_2 =  Teacher(name='Препод',surname='Тестовый',second_name='6')
-
-# db_add_objects(test_user_2)
-# Поменять название классов без ____
-# UserInfo=db.session.query(UserInfo).filter(UserInfo.user_id == 1).first()
-# # UserInfo = UserInfo(1)
-# # UserInfo.set_phone("+7-985-25-25-25")
-# UserInfo.set_home_region("")
-# # UserInfo.set_deltailed_description("Подробное описание -ла-ла-ла")
-# db_add_objects(UserInfo)
-
-# # User_Social_Pages=db.session.query(User_Social_Pages).filter(User_Social_Pages.user_id == 1).first()
-# # User_Social_Pages = User_Social_Pages(1)
-# UserSocialPages = UserSocialPages(1)
-# UserSocialPages.set_vk_page("https://vk.com/id319329506")
-# db_add_objects(UserSocialPages)
-
-# db.metadata.create_all(engine)
-
-# IMsO
-# test_user_2 =  User(name='Тестов',surname='Тест',second_name='2')
-# print('test_registration_user = ', test_registration_user)
-# print("reg_pass = ",test_user_2.set_registration_password(password_length = 4))
-# sUNQ
-# db.session.add(test_user_2)
-# db.session.commit()
-
-""" TEST AREA END"""
-
-
-
-# Session = sessionmaker(bind=engine)
-# session = Session()
-
-
-
-# test_registration_user = session.query(User).filter(User.id == 21).first()
-# print('test_registration_user = ', test_registration_user)
-# #  =  User(name='Тестовый регистрации',surname='1',second_name='2')
-# print("reg_pass = ",test_registration_user.set_registration_password(password_length = 4))
-# session.add(test_registration_user)
-
-# try:
-#     session.commit()
-# except SQLAlchemyError as e:
-#     error = str(e.__dict__['orig'])
-#     print('Возникла ошибка:\n', error)
-
-
-# # course = session.query(EducationalCourse).filter(EducationalCourse.course_name == 'test_course_1').first()
-# # print(course)
-# # set_registration_password(self, password_length)
-# # Anvar = session.query(User).all()
-# # print('Anvar')
-
-# # spike = User(name='spike',surname='Тестовый',second_name='Тестович',username = 'spike')
-# # tyke = User(name='tyke',surname='Тестовый',second_name='Тестович',username = 'tyke')
-# # u1 = session.query(User).filter(User.name == 'Тест').first()
-# # print(u1)
-# # User_Info.__table__.drop(engine)
-# # User.__table__.drop()
-#     # anvar = User(name='Анвар',surname='Галиуллин',second_name='Ринатович')
-#     # print(anvar)
-#     # session.add(anvar)
-#     # print(session.new)
-#     # session.commit()
-
-
-# # u1 = User(username='spike', email='spike@example.com')
-# # u1 = db.session.query(User).filter(User.username == 'spike').first()
-
-# # Не удаляем этот кусок. Это пример генерации пароля регистрации для пользователя
-#     # user1 = session.query(User).filter(User.name == 'Анвар').first()
-#     # print('Для пользователя "',user1.surname,' ',user1.name,' ',user1.second_name,'" сгенерирован пароль: ',user1.set_registration_password())
-#     # session.add(user1)
-#     # session.commit()
-
-# user1 = session.query(User).filter(User.name == 'Анвар').first()
-# user1.set_username('admin')
-# user1.set_email('anvargal@mail.ru')
-# user1.set_password('admin')
-# session.add(user1)
-# session.commit()
-
-
-# # geros = User(name='geros',surname='1',second_name='2')
-# # print('Для пользователя "',geros.surname,' ',geros.name,' ',geros.second_name,'" сгенерирован пароль: ',geros.set_registration_password())
-# # session.add(geros)
-# # session.commit()
-
-
-
-
-# course = session.query(EducationalCourse).filter(EducationalCourse.course_name == 'test_course_1').first()
-# group = session.query(EducationalGroup).filter(EducationalGroup.group_name == 'my_test_group_2').first()
-# print(course)
-
-# course.add_group(group)
-# # AssociationCourseGroup(course.id, group.id, is_active = 1, extra_data='my attempts').associate_course_with_group()
-# # course_x_group
-
-# try:
-#     session.commit()
-# except SQLAlchemyError as e:
-#     error = str(e.__dict__['orig'])
-#     print('Возникла ошибка:\n', error)
-
-# db_result = session.query(EducationalGroup).all()
-# print('\nТаблица EducationalGroup')
-# for row in db_result:
-#     print (row.id, row.group_name, row.faculty_name, row.course_number)
-
-# db_result = session.query(EducationalCourse).all()
-# print('\nТаблица EducationalCourse')
-# for row in db_result:
-#     print (row.id, row.course_name, row.course_description)
-
-
