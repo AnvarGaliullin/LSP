@@ -7,7 +7,6 @@
 - runner.py runserver (Runs the Flask development server)
 - runner.py shell (Runs a Python shell inside Flask application context)
 - runner.py db (Perform database migrations)
-- test_Hangman.py (run tests)
 - pycodestyle.py (code style check)
 
 
