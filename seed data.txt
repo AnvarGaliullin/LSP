@@ -1,0 +1,12 @@
+pre-registered users (registration passwords):
+[teacher: qbLTCyz0Cx,
+ student: xIw2zFwFFY,
+ student: aeOgF0WTD2, 
+ student: xVX7hTkI3j ]
+
+registered users: (login/password)
+[teacher: teacher@gmail.com   1234567890Aa,
+ teacher: t2@mail.ru   Asdf1asdf,
+ student: andrey@mail.ru   123QWEqwe,
+ student: ivan@gmail.ru   StrongPassword1,
+ student: petr@mail.ru   PetrPass123]
