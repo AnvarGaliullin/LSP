@@ -1,11 +1,12 @@
 from application import app#, login_manager
-from flask import render_template, request, redirect, url_for, flash, make_response, session, abort
+from flask import render_template, request, redirect, url_for, flash, make_response, session, abort, json, jsonify
 # from sqlalchemy import or_
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, login_user,current_user, logout_user
 from .models import User, UserInfo, UserSocialPages, Student, Teacher, EducationalGroup, EducationalCourse, CourseMaterial, db, db_add_objects, CourseResponsiblePerson, CourseHometask, StudentHometask
 from .forms import LoginForm, RegisterForm, PersonalCabinetForm, ChangePassword, CourseAddMaterialForm, CourseHometaskForm, StudentHometaskForm
 from datetime import datetime
+ 
 
 @app.errorhandler(404)
 def error404(error):
@@ -85,6 +86,12 @@ def register():
 
 @app.route('/login/', methods=['post', 'get'])
 def login():
+    print('go')
+    print('URL = ',request.url)
+    print('Сервер получил запрос метода',request.method)
+    print('request.form = ,', request.form)
+    print('request.values = ',request.values)
+
     if current_user.is_authenticated:
 	    return redirect(url_for('index'))
     form = LoginForm()
@@ -110,6 +117,62 @@ def logout():
     flash("You have been logged out.", 'warning')
     return redirect(url_for('login'))
 
+# :<user_id>/edit_user_info
+
+@app.route('/personal_cabinet/user_id/<user_id>', methods=['PUT'])
+def edit_user_info(user_id):
+    user_id = int(user_id)
+    user = db.session.query(User).filter(User.id == user_id).first_or_404()
+    form = PersonalCabinetForm(request.form)
+    print('form.is_submitted() = ', form.is_submitted())
+    form.submit()
+    print('form.is_submitted() = ', form.is_submitted())
+
+    print('form.errors = ', form.errors)
+
+    for field in form:
+        print('field = ',field.label)
+        for error in field.errors:
+            print('field = ',field.label,' has error:', error)
+    print('form.validate() = ',form.validate())
+    print('form.errors = ', form.errors)
+    print('URL = ',request.url)
+    print('Сервер получил запрос метода',request.method)
+    print('user_id = ',user_id)
+    print('request.form = ,', request.form)
+    print('request.values = ',request.values)
+    print('type user_id',type(user_id))
+    if current_user.id == user_id:
+        if form.validate():
+            print('form succussfully validated')
+            user_info = db.session.query(UserInfo).filter(UserInfo.user_id == user_id).first()
+            user_social_pages = db.session.query(UserSocialPages).filter(UserSocialPages.user_id == user_id).first()
+
+            user_info.set_phone(form.phone.data)
+            user_info.set_home_region(form.home_region.data)
+            user_info.set_detailed_description(form.detailed_description.data)
+            user_social_pages.set_vk_page(form.vk.data)
+            print('form.phone.data = ',form.phone.data)
+            user_social_pages.set_facebook_page(form.facebook.data)
+            user_social_pages.set_linked_in_page(form.linked_in.data)
+            user_social_pages.set_instagram_page(form.instagram.data)
+            db_add_objects(user_info, user_social_pages)
+            print('updated in db')
+            print('form.data = ', form.data)
+            response_data = {'message': 'null', 'code': 'SUCCESS', 'form_data': form.data}
+            response =  make_response(jsonify(response_data), 200)
+            flash("Данные обновлены!", 'success')
+        else:
+            print('ошибка валидации и доступов' )
+            response_data = {'message': 'validation error', 'code': 'ERROR','validation_errors': form.errors}
+            response =  make_response(jsonify(response_data), 404)
+            result = jsonify(message="null", code="SUCCESS")
+            # response.headers 
+            #  contentType: "application/json",
+            # dataType: 'json'
+
+
+    return response
 
 
 @app.route('/personal_cabinet/user_id:<user_id>', methods=['POST', 'GET'])
@@ -127,20 +190,23 @@ def personal_cabinet(user_id):
     if user.id == current_user.id:
         watch_only = False
 
+    form = PersonalCabinetForm(
+        email=user.email,
+        phone = user_info.phone,
+        home_region = user_info.home_region,
+        detailed_description = user_info.detailed_description,
+        vk = user_social_pages.vk,
+        facebook = user_social_pages.facebook,
+        linked_in = user_social_pages.linked_in,
+        instagram = user_social_pages.instagram
+    )
 
-    form = PersonalCabinetForm(detailed_description = user_info.detailed_description)
-    if form.validate_on_submit():
-        user_info.set_phone(form.phone.data)
-        user_info.set_home_region(form.home_region.data)
-        user_info.set_detailed_description(form.detailed_description.data)
-
-        user_social_pages.set_vk_page(form.vk.data)
-        user_social_pages.set_facebook_page(form.facebook.data)
-        user_social_pages.set_linked_in_page(form.linked_in.data)
-        user_social_pages.set_instagram_page(form.instagram.data)
-
-        db_add_objects(user_info, user_social_pages)
-        return render_template('personal_cabinet.html', form=form, user = user, user_info=user_info, user_social_pages=user_social_pages, student=student, educational_group_name=educational_group_name, watch_only=watch_only)
+    print('user.email = ',user.email)
+    for field in form:
+        print('field = ',field.label,' = ',field.data)
+        for error in field.errors:
+            print('field = ',field.label,' has error:', error)
+    print('1')
     return render_template('personal_cabinet.html', form=form, user = user, user_info=user_info, user_social_pages=user_social_pages, student=student, educational_group_name=educational_group_name, watch_only=watch_only)
 
 

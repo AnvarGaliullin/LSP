@@ -30,7 +30,7 @@ class PersonalCabinetForm(FlaskForm):
     vk = StringField("vk:", validators=[Optional(), Regexp("^(https?:\/\/)?(www\.)?vk\.com\/(\w|\d)+?\/?$", message="Некорректная ссылка")], render_kw={"placeholder": "ссылка на vk профиль"} )
     facebook = StringField("facebook:", validators=[Optional(), Regexp("http(s)?:\/\/(www\.)?(facebook|fb)\.com\/[A-z0-9_\-\.]+\/?", message="Некорректная ссылка")], render_kw={"placeholder": "ссылка на facebook профиль"} )
     linked_in = StringField("linked_in:", validators=[Optional(), Regexp("http(s)?:\/\/(www\.)?(facebook|fb)\.com\/[A-z0-9_\-\.]+\/?", message="Некорректная ссылка")], render_kw={"placeholder": "ссылка на LinkedIn профиль"} )
-    instagram = StringField("instagram:", validators=[Optional(), Regexp("http(s)?:\/\/(www\.)?(facebook|fb)\.com\/[A-z0-9_\-\.]+\/?", message="Некорректная ссылка")], render_kw={"placeholder": "ссылка на instagram профиль"} )
+    instagram = StringField("instagram:", validators=[Optional(), Regexp("http(s)?:\/\/(www\.)?(facebook|fb)\.com\/[A-z0-9_\-\.]+\/?", message="Incorrect Link")], render_kw={"placeholder": "ссылка на instagram профиль"} )
     submit = SubmitField("Сохранить изменения")
 
 

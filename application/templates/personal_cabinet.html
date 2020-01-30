@@ -1,8 +1,14 @@
 {% extends 'base.html' %}
 {% from "_render_field.html" import render_field %}
 {% from "_render_field.html" import render_button %}
+{% from "_render_field.html" import render_button_onclick %}
 {% from "_render_field.html" import render_icon_field %}
 
+
+{% block head %}
+<!-- <script src="/static/js/functions/submit_personal_cabinet_form.js"></script> -->
+<script src="/static/js/functions/send_submitted_form.js"></script>
+{% endblock %}
 
 
 {% block title %}
@@ -11,6 +17,7 @@ Personal Cabinet
 
 
 {% block content_title %}
+
 {{user.surname}} {{user.name}} {{user.second_name}}
 {% endblock %}
 
@@ -18,10 +25,11 @@ Personal Cabinet
 {% block content %}
 <br>
 
-<form class="horizontal-form" , method="POST">
+<form id="form-personal-cabinet" class="horizontal-form" , method="POST">
     {% if watch_only == True %}
     <fieldset disabled>
     {% endif %}
+    {#
         {{ form.csrf_token }}
         {{ render_field(form.email, placeholder = user.email, disable=True, hide=watch_only) }}
         {{ render_field(form.phone, placeholder = user_info.phone, hide=watch_only) }}
@@ -33,13 +41,45 @@ Personal Cabinet
         {{ render_icon_field(form.facebook, placeholder = user_social_pages.facebook, icon = 'facebook', hide=watch_only) }}
         {{ render_icon_field(form.linked_in, placeholder = user_social_pages.linked_in, icon = 'linkedin', hide=watch_only) }}
         {{ render_icon_field(form.instagram, placeholder = user_social_pages.instagram, icon = 'instagram', hide=watch_only) }}
-    {% if watch_only == True %}
-    </fieldset>
-    {% endif %}
+    
 
-    {% if watch_only == False %}
-    {{ render_button(form.submit) }}
+        
+        #}
+        {{ form.csrf_token }}
+        {{ render_field(form.email, disable=True, hide=watch_only) }}
+        {{ render_field(form.phone, hide=watch_only) }}
+        {{ render_field(form.home_region, hide=watch_only) }}
+        {{ render_field(form.detailed_description,  hide=watch_only, lines=5) }}
+
+        {{ render_icon_field(form.vk, icon = 'vk', hide=watch_only) }}
+        {{ render_icon_field(form.facebook,  icon = 'facebook', hide=watch_only) }}
+        {{ render_icon_field(form.linked_in,  icon = 'linkedin', hide=watch_only) }}
+        {{ render_icon_field(form.instagram,  icon = 'instagram', hide=watch_only) }}
+
+
+        <div class = "form-group row">
+            <div class="col-sm-2 col-form-label control-label">
+                <button onclick="send_submitted_form({
+                    url:'{{ url_for('edit_user_info', user_id=user.id) }}',
+                    request_type:'PUT',
+                    form_id: 'form-personal-cabinet',
+                    form: form
+                    });" id="button-personal-cabinet-submit" class="btn btn-primary text-center" type="button">Сохранить</button>
+            </div>
+        </div>
+
+        {% if watch_only == True %}
+    </fieldset>
+
     {% endif %}
+   
+    
+{#
+    {% if watch_only == False %}
+    {{ render_button(form.submit, id="button-personal-cabinet-submit") }}
+    {% endif %}
+#}
+
 
     {% if (student!=None and student.id != None) %}
     <h3>Информация об обучении:</h3>
