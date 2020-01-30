@@ -12,7 +12,7 @@ def db_add_objects(*objects):
     try:
         db.session.add_all(objects)
         db.session.commit()
-        # print('added objects:',*objects,' to db')
+        print('added objects:',*objects,' to db')
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         flash( ("Возникла ошибка:\n" + error), 'error')

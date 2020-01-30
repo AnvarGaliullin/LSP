@@ -5,18 +5,31 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <!-- Bootstrap CSS -->
+        <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="/static/js/bootstrap/bootstrap.js"> -->
+    <!-- Animate for Bootstrap-notify -->
+    <link rel="stylesheet" href="/static/css/animate.css">
+    
     <!-- Font Awesome -->
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet"/>
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet"/> -->
+    <!-- <link rel="stylesheet" href="/static/css/font-awesome-4.7.0/css/font-awesome.min.css"> -->
+    <link rel="stylesheet" href="/static/css/font-awesome-4.7.0/css/font-awesome.min.css">
+
+    <!-- Popper -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 
     <!-- favicon -->
     <link rel="shortcut icon" href="{{url_for('static', filename='address_book.png') }}">
     <link rel="icon" href="{{url_for('static', filename='address_book.png') }}">
     <!-- <link rel="icon" href="../static/address_book.png" type="image/x-icon">
     <link rel="shortcut icon" href="../static/address_book.png" type="image/x-icon"> -->
+    {% block head %}
 
+    {% endblock %}
     
     <title>
         {% block title %}
@@ -38,16 +51,47 @@
       }
     
     </style>
-
-<script>
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-    })
-</script>
         
 
 </head>
 <body>
+
+
+        <!-- JQuery -->
+        <script src="/static/js/jquery/jquery-3.4.1.js"></script>
+        <!-- Bootstrap JS -->
+        <script src="/static/js/bootstrap/bootstrap.js"></script>
+
+<!-- Bootstrap - Notify -->
+<script src="/static/js/bootstrap-notify/bootstrap-notify.js"></script>
+<script>
+    $.notifyDefaults({
+        offset: {
+            x: 20,
+            y: 70
+        },
+        onShow: function () {
+            this.css({ 'width': 'auto', 'height': 'auto' });
+        }
+    });
+</script>
+
+<script>
+    function notify(parametrs) {
+        message = parametrs.message
+        category = parametrs.category
+        icon = parametrs.icon || ''
+        $.notify({
+            icon: icon,
+            message: message
+        }, {
+            type: category
+        });
+    }
+</script>
+<!-- Bootstrap - Notify  END-->
+<!-- Send Submitted Flask Form to Server -->
+<script src="/static/js/functions/send_submitted_form.js"></script>
 
 
     <nav class="navbar bg-light">
@@ -56,7 +100,7 @@
                 <a href="{{ url_for('index') }}">
                 <img src="/static/upper_logo.jpg" class="img-fluid" height="64" width="64"  class="d-inline-block align-top" alt="">
                 </a>
-                <a href="{{ url_for('index') }}"><button class="btn" type="button">Learning Managment System</button></a>
+                <a href="{{ url_for('index') }}"><button class="btn" type="button" data-toggle="tooltip" data-placement="bottom" title="Информация о пользователе">Learning Managment System</button></a>
             </div>
         </div>
         
@@ -76,31 +120,24 @@
 <div class="row">
     <div class="col-sm-4 offset-8">
         {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {%- for category, message in messages %}
-                    <div id="my-alert" class="alert alert-{{category}} alert-dismissible fade show" role="alert">
-                      <span>{{ message }}</span>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                {% endfor -%}
-            {% endif %}
+        {% if messages %}
+        {%- for category, message in messages %}
+        <script>
+            $.notify({
+                message: '{{ message }}'
+            }, {
+                type: '{{category}}'
+            });
+        </script>
+        </script>
+        {% endfor -%}
+        {% endif %}
         {% endwith %}
     </div>
 </div>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-<script>
-    $(function(){
-        window.setTimeout(function(){
-            $('#my-alert').alert('close');
-        },5000);
-    });
-</script>
 <!-- FLash messages end -->
 
-
+<button onclick="notify({message:'Данные сохранены!', category:'success', icon:'fa fa-check'})">Нажми</button>
 
 
 
@@ -119,8 +156,14 @@
     </div>
 </div>
 
-
-  
+  <!-- SCRIPTS -->
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+<!-- END SCRIPTS -->
 
 </body>
+
 </html>
