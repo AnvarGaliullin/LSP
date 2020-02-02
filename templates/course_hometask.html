@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% from "_render_field.html" import render_field %}
+{% from "_render_field.html" import render_button %}
+
+
+{% block title %}
+Hometask
+{% endblock %}
+
+
+{% block content_title %}
+{{hometask.name}}
+{% endblock %}
+
+
+{% block content %}
+<b>Задание:</b> {{hometask.content}}
+<br>
+<p class="font-weight-light">Дедлайн: {{deadline}}</p>
+<p></p>
+{% if is_student == True %}
+<div class="container">
+    <form class="horizontal-form" , method="POST">
+        {{ form.csrf_token }}
+        {% if hometask.end_dttm > current_dttm %}
+            {{ render_field(form.content, lines=10, field_size=8, disable = False) }}
+            {% else %}
+            {{ render_field(form.content, lines=10, field_size=8, disable = True) }}
+        {% endif %}
+        
+        {% if hometask.end_dttm > current_dttm %}
+            {{ render_button(form.submit) }}
+        {% endif %}
+    </form>
+</div>
+{% endif %}
+
+
+{% if can_edit_hometask==True %}
+<div class="container-fluid">
+    <div class="row">
+    <div class="col-sm-10">
+    {% if groups != [] %} 
+    {% set count_groups = namespace(value=0) %}
+    {% for group in groups %}
+    <h4>{{group}}</h4>
+            <table class="table table-sm">
+                    <thead class="thead-light">
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Студент</th>
+                        <th scope="col">Время отправки</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% set count = namespace(value=0) %}
+                    {% for student_hometask in student_hometasks %}
+                    {% if student_hometask['group_name'] == group %}
+    
+
+                    {% set count.value = count.value + 1 %}
+                    <tr>
+                        <th scope="row-black color=black">{{count.value}}</th>
+                    <td>
+                        
+                            {{student_hometask['surname']}} {{student_hometask['name']}} {{student_hometask['second_name']}}
+                        
+                    </td>
+                    <td>
+                        {% if student_hometask['is_hometask_passed'] == 1 %}
+                        <a href="{{ url_for('course_student_hometask', course_id=course.id, hometask_id=hometask.id, student_hometask_id=student_hometask['student_hometask_id']) }}"
+                            data-toggle="tooltip" data-placement="right" title="Просмотреть решение студента">
+                            {{student_hometask['hometask_pass_dttm']}}
+                        </a>
+                        {% else %}
+                        <i class="fa fa-times" aria-hidden="true" data-toggle="tooltip" data-placement="right"
+                            title="Домашнее задание не отправлено"></i>
+                        {% endif %}
+                        
+                    </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                    </tbody>
+                  </table>
+
+                  {% endfor %}
+                  {% endif %} 
+    </div>
+    </div>
+    </div>
+{% endif %}
+
+{% endblock %}

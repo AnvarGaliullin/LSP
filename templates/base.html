@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="/static/js/bootstrap/bootstrap.js"> -->
+    <!-- Animate for Bootstrap-notify -->
+    <link rel="stylesheet" href="/static/css/animate.css">
+    
+    <!-- Font Awesome -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet"/> -->
+    <!-- <link rel="stylesheet" href="/static/css/font-awesome-4.7.0/css/font-awesome.min.css"> -->
+    <link rel="stylesheet" href="/static/css/font-awesome-4.7.0/css/font-awesome.min.css">
+
+    
+    <!-- favicon -->
+    <link rel="shortcut icon" href="{{url_for('static', filename='address_book.png') }}">
+    <link rel="icon" href="{{url_for('static', filename='address_book.png') }}">
+    <!-- <link rel="icon" href="../static/address_book.png" type="image/x-icon">
+    <link rel="shortcut icon" href="../static/address_book.png" type="image/x-icon"> -->
+
+
+    {% block head %}
+
+    {% endblock %}
+    
+    <title>
+        {% block title %}
+
+        {% endblock %} | LMS app
+        
+    </title>
+
+    <style>
+      .alert {
+        position: fixed;
+        max-width: 50%;
+        right: 0;
+        z-index: 7000;
+      }
+      /* Font Awesome Icons */
+      .fa {
+       font-size: 30px;
+      }
+    </style>
+        
+
+
+
+</head>
+<body>
+
+         <!-- require.js -->
+
+         <script data-main="/static/js/require/config" src="/static/js/require/require-2.3.6.js" ></script>
+         <script >
+         console.log('before require function')
+         require(['config'], function init_requirements() {
+            //  console.log('before download jquery')
+             require(['jquery', 'bootstrap', 'bootstrap_notify'],function(){
+                 console.log('hehe')
+                //  {% block scripts %}
+
+                //  {% endblock %}
+                 //All scripts should be here
+     $.notifyDefaults({
+                offset: {
+                    x: 20,
+                    y: 70
+                },
+                onShow: function () {
+                    this.css({ 'width': 'auto', 'height': 'auto' });
+                }
+            });
+
+            function notify(parametrs) {
+                message = parametrs.message
+                category = parametrs.category
+                icon = parametrs.icon || ''
+                $.notify({
+                    icon: icon,
+                    message: message
+                }, {
+                    type: category
+                });
+            }
+
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+                 //end scripts
+
+
+             });
+                //  $('body').html('Hello from the other side')
+            //  require(['popper']);
+            //  require(['bootstrap']);
+            //  require(['bootstrap_notify']);
+            //  require(['jqueryFile']);
+            //  console.log('jquery = ', jquery);
+             console.log('after download jquery');
+         });
+         console.log('after require function');
+
+
+    
+
+
+         </script>
+<script>
+console.log('go next srcipt');
+</script>
+
+      
+<!-- Bootstrap - Notify  END-->
+<!-- Send Submitted Flask Form to Server -->
+    <!-- <script src="/static/js/functions/send_submitted_form.js"></script>
+    <script src="/static/js/functions/submit_personal_cabinet_form.js"></script> -->
+
+
+
+    <nav class="navbar bg-light">
+        <div class="container-fluid"></div>
+            <div class="col-sm-6 col-12 wrap_images">
+                <a href="{{ url_for('index') }}">
+                <img src="/static/upper_logo.jpg" class="img-fluid" height="64" width="64"  class="d-inline-block align-top" alt="">
+                </a>
+                <a href="{{ url_for('index') }}"><button class="btn" type="button" data-toggle="tooltip" data-placement="bottom" title="Информация о пользователе">Learning Managment System</button></a>
+            </div>
+        </div>
+        
+        <ul class="nav justify-content-right">
+            <li class="nav-item mx-1">
+                <a href="{{ url_for('personal_cabinet', user_id=current_user.get_id()) }}"><button class="btn btn-outline-primary" type="button">Личный кабинет</button></a>
+            </li>
+                <li class="nav-item mx-1">
+                    <a href="/logout"><button class="btn btn-outline-primary" type="button">Выйти</button></a>
+                </li>
+        </ul>
+        </nav>
+
+
+
+<!-- FLash messages  -->
+<div class="row">
+    <div class="col-sm-4 offset-8">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {%- for category, message in messages %}
+        <script>
+            notify({
+                message: '{{ message }}'
+            }, {
+                type: '{{category}}'
+            });
+        </script>
+        {% endfor -%}
+        {% endif %}
+        {% endwith %}
+    </div>
+</div>
+<!-- FLash messages end -->
+
+<button onclick="notify({message:'Данные сохранены!', category:'success', icon:'fa fa-check'})">Нажми</button>
+
+
+
+<div class="container">
+    <div class="ml-1 mt-3">
+    <h3>
+        {% block content_title %}
+
+        {% endblock %}
+    </div>
+    </h3>
+    <div class="ml-1">
+        {% block content %}
+
+        {% endblock %}
+    </div>
+</div>
+
+
+
+</body>
+
+</html>

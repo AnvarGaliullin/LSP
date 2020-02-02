@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Index
+{% endblock %}
+
+
+{% block content_title %}
+    Привет, {{current_user.name}}!
+{% endblock %}
+
+<!-- return render_template('index.html', group_name=group_name, groupmates=groupmates ) -->
+{% block content %}
+<div class="container">
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-courses-tab" data-toggle="tab" href="#nav-courses" role="tab"
+            aria-controls="nav-courses" aria-selected="true">Мои курсы</a>
+            {% if (group_name != None and group_name != '') %}
+        <a class="nav-item nav-link" id="nav-group-tab" data-toggle="tab" href="#nav-group" role="tab"
+            aria-controls="nav-group" aria-selected="false">Моя группа</a>
+            {% endif %}
+        <!-- <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
+            aria-controls="nav-contact" aria-selected="false">Другое</a> -->
+    </div>
+</nav>
+</div>
+
+
+<div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-courses" role="tabpanel" aria-labelledby="nav-courses-tab">
+           
+        <p></p>
+        <div class="container-fluid">
+        <div class="row">
+        <div class="col-sm-6">
+        <table class="table table-sm">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Курс</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                {% for course in courses %}  
+                <tr>
+                    <th scope="row-black color=black">{{loop.index}}</th>
+                <td>
+                    <a href="{{ url_for('course', course_id=courses[loop.index-1]['id']) }}">
+                        {{courses[loop.index-1]['course_name']}}
+                    </a>
+                </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+    </div>
+</div>
+</div>
+
+    </div>
+    
+    {% if (group_name != None and group_name != '') %}
+    <div class="tab-pane fade" id="nav-group" role="tabpanel" aria-labelledby="nav-group-tab">
+        <p></p>
+        <div class="container-fluid">
+        <div class="row">
+        <div class="col-sm-6">
+        <b>{{group_name}}</b>
+        <p></p>
+        <table class="table table-sm">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Студент</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                {% for student in groupmates %}  
+                <tr>
+                    <th scope="row-black color=black">{{loop.index}}</th>
+                <td>
+                    <a href="{{ url_for('personal_cabinet', user_id=groupmates[loop.index-1]['id']) }}">
+                        {{groupmates[loop.index-1]['surname']}} {{groupmates[loop.index-1]['name']}}
+                        {{groupmates[loop.index-1]['second_name']}}
+                    </a>
+                </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+    </div>
+</div>
+</div>
+</div>
+    {% endif %}
+    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">3</div>
+</div>
+
+
+
+
+<!-- 
+<ul class="nav nav-pills">
+        <li class="nav-item">
+          <a class="nav-link active" href="#">Active</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+        </li>
+      </ul>
+
+
+<div class="jumbotron">
+    <h1 class="display-4">Hello, world!</h1>
+    <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+    <hr class="my-4">
+    <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
+    <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+</div> -->
+
+    <!-- <a href="{{ url_for('admin') }}">Перейти на главную страницу:</a> -->
+{% endblock %}
