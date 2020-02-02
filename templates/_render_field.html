@@ -10,13 +10,10 @@
         {% endif %}
     </div>
     <div class="col-sm">
-        {% if field.errors %}
-        <ul>
-        {% for error in field.errors %}
-            <li style="color:red;">{{ error}}</li>
-        {% endfor %}
-        </ul>
-        {% endif %}
+        <div id="{{field.id}}-errors">
+            <ul>
+            </ul>
+        </div>
     </div>
 </div>
 {% endif %}
@@ -26,10 +23,8 @@
 {% macro render_button(field, id="button", hide='True') %}
 {% if not (hide == True and (placeholder == '' or placeholder == None or placeholder == 'None')) %}
 <div class = "form-group row">
-    <!-- <div class="d-none"> -->
     <div class="col-sm-2 col-form-label control-label">
         {{ field(class = "btn btn-primary text-center", id=id ) }}
-    <!-- </div> -->
     </div>
 </div>
 {% endif %}
@@ -42,8 +37,7 @@
 <div class = "form-group row">
     <label for="{{field.name}}" class="col-sm-2 col-form-label control-label">
 <div id="{{field.id}}-href">
-    {{field.id}}-href
-    
+
     {% if (field.data == '' or field.data == None) %}
     <a><i class="fa fa-{{icon}}"></i></a>
     {% else %}
@@ -62,13 +56,10 @@
         {% endif %}
     </div>
     <div class="col-sm">
-        {% if field.errors %}
-        <ul>
-        {% for error in field.errors %}
-            <li style="color:red;">{{ error}}</li>
-        {% endfor %}
-        </ul>
-        {% endif %}
+        <div id="{{field.id}}-errors">
+            <ul>
+            </ul>
+        </div>
     </div>
 </div>
 {% endif %}

@@ -1,72 +1,68 @@
-// import * from 'send_submitted_form'
-// import send_submitted_form from './send_submitted_form.js'
-// import {send_submitted_form} from './send_submitted_form.js';
-
-function submit_personal_cabinet_form(params) {
-	// import send_submitted_form from './send_submitted_form.js';
-	console.log('params = ',params)
-	// import('./send_submitted_form.js')
-	console.log('imported')
-// send_flask_form
-	// import('./send_submitted_form.js');
-
-	// $.getScript("./send_submitted_form", function() {
-	// 	console.log('123')
-	// send_submitted_form(params);
-	// 	console.log('456')
-	// })
-	 
-
-// 	alert("Script loaded but not necessarily executed.");
-	// send_submitted_form(params)
-
-//  });
-console.log('!ENDEDE!ss')
-};
-console.log('!!ss')
-// var powerLevel = require('./powerlevel')
-// powerLevel(9050);
-// import send_submitted_form from './send_submitted_form.js';
+function submit_personal_cabinet_form(response) {
+	console.log('<submit_personal_cabinet_form> with response = ',response);
+	try {
+		// Validation errors
+		status_code = response.responseJSON.code;
+	} catch (err) {
+		// OK
+		try {
+			status_code = response.code;
+		} catch (err2) {
+			// ERRORS
+		}
+	}
+	  console.log('status_code= ',status_code)
 
 
+	// error_code = response.responseJSON['code'] || ''
+	// validation_errors = response.responseJSON['validation_errors']
+	// // ah = response_validation_errors.home_region
+	// console.log('responseJSON = ',response.responseJSON)
+	// console.log('response_validation_errors = ',response_validation_errors)
+	// console.log('ah = ',ah)
+	if (status_code == 'SUCCESS') {
+		response_form_data = response.form_data
+		notify({ message: 'Данные сохранены!', category: 'success', icon: 'fa fa-check' })
+		for (let field in response_form_data) {
+			let icon_href = '#' + field + '-href > a' // Search for icon in {{render_field}} and change it href
+			let field_errors = '#' + field + '-errors ul' // Search for icon in {{render_field}} and change it href
+			// console.log('response_form_data[' + field + '] = '+response_form_data[field])
+			$(field_errors).html('');
+			if (response_form_data[field] == '') {
+				$(icon_href).removeAttr("href");
+			} else {
+				$(icon_href).attr("href", response_form_data[field]);
+			}
+		}
+	}
 
-// import send_submitted_form from './send_submitted_form.js';
-
-// function send_submitted_form(params) {
-// 	return false;
-// }
-
-	// this.data = getData();
-	// import(send_submitted_form from './send_submitted_form.js';)
-	// console.log('call me!')
-	// import('/send_submitted_form.js')
-	// console.log('call me2!')
-	// let form_id = params.form_id
-	// let url = params.url
-	// let request_type = params.request_type
-	// let send_data = $('#'+form_id).serialize()
-
-	// $.ajax({
-	// 	url: url,
-	// 	data: send_data,
-	// 	type: request_type,
-
-	// 	success: function (response) {
-	// 		response_form_data = response.form_data
-	// 		if (response.code == 'SUCCESS') {
-	// 			// notify({message:'Данные сохранены!', category:'success', icon:'fa fa-check'})
-
-	// 			for (let field in response_form_data) {
-	// 				let icon_href = '#' + field + '-href > a' // Search for icon in {{render_field}} and change it href
-	// 				$(icon_href).$(a).attr( "href", response_form_data[field]);
-	// 			   }
-	// 		}
-		
+	if (status_code == 'ERROR') {
+		response_form_errors = response.responseJSON.form_errors
+		console.log('response_form_errors = ',response_form_errors)
+		notify({ message: 'Возникли ошибки!', category: 'danger', icon: 'fa fa-times' })
+		console.log('STOOOP')
+		for (let field in response_form_errors) {
 			
-	// 	},
-	// 	error: function (response) {
-		
-	// 	}
-	// });
+			let field_errors = '#' + field + '-errors ul' // Search for icon in {{render_field}} and change it href
+			console.log('field = ',field, ' with errors = ',response_form_errors[field])
 
+			
+			// console.log('response_form_data[' + field + '] = '+response_form_data[field])
+			if (response_form_errors[field] == '') {
+				// $(icon_href).removeAttr("href");
+				console.log('NO ERRORS ON FIELD ', field, '!!!')
+			} else {
+				console.log('ERRORS ON FIELD ', field, '!!!')
+				let icon_href = '#' + field + '-href > a' // Search for icon in {{render_field}} and change it href
+				$(icon_href).removeAttr("href");
+				// $("#header ul").append('<li><a href="/user/messages"><span class="tab">Message Center</span></a></li>');
+				// $('#mt-news ul').html('<li><a class="red" href="#" target="_self">Context x</a></li>');
+				// alert($('#mt-news').html());
 
+				$(field_errors).html('<li style="color:red;">' + response_form_errors[field] + '</li>');
+				// $(field_errors).attr("href", response_form_data[field]);
+			}
+		}
+	}
+
+};

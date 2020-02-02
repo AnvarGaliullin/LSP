@@ -21,14 +21,13 @@ Personal Cabinet
 {{user.surname}} {{user.name}} {{user.second_name}}
 {% endblock %}
 
-
-{% block content %}
-<br>
-
 {% block scripts %}
 <script src="/static/js/functions/submit_personal_cabinet_form.js"></script>
 {% endblock %}
 
+
+{% block content %}
+<br>
 
 <form id="form-personal-cabinet" class="horizontal-form" , method="POST">
     {% if watch_only == True %}
@@ -36,9 +35,9 @@ Personal Cabinet
     {% endif %}
     {#
         {{ form.csrf_token }}
-        {{ render_field(form.email, placeholder = user.email, disable=True, hide=watch_only) }}
-        {{ render_field(form.phone, placeholder = user_info.phone, hide=watch_only) }}
-        {{ render_field(form.home_region, placeholder = user_info.home_region, hide=watch_only) }}
+        {{ render_field(form.email, disable=True, hide=watch_only) }}
+        {{ render_field(form.phone, hide=watch_only) }}
+        {{ render_field(form.home_region, hide=watch_only) }}
         {{ render_field(form.detailed_description, placeholder = user_info.detailed_description, hide=watch_only, lines=5) }}
 
 
@@ -67,34 +66,18 @@ Personal Cabinet
                     url:'{{ url_for('edit_user_info', user_id=user.id) }}',
                     request_type:'PUT',
                     form_id: 'form-personal-cabinet',
-                    form: form
+                    form: form,
+                    function_on_response: submit_personal_cabinet_form
+                    // function_on_success: 'submit_personal_cabinet_form'
                     });" id="button-personal-cabinet-submit" class="btn btn-primary text-center" type="button">Сохранить</button>
             </div>
         </div>
-
-
-        <!-- <div class = "form-group row">
-            <div class="col-sm-2 col-form-label control-label">
-                <button onclick="send_submitted_form({
-                    url:'{{ url_for('edit_user_info', user_id=user.id) }}',
-                    request_type:'PUT',
-                    form_id: 'form-personal-cabinet',
-                    form: form
-                    });" id="button-personal-cabinet-submit" class="btn btn-primary text-center" type="button">Сохранить</button>
-            </div>
-        </div> -->
 
         {% if watch_only == True %}
     </fieldset>
 
     {% endif %}
    
-    
-{#
-    {% if watch_only == False %}
-    {{ render_button(form.submit, id="button-personal-cabinet-submit") }}
-    {% endif %}
-#}
 
 
     {% if (student!=None and student.id != None) %}

@@ -164,14 +164,14 @@ def edit_user_info(user_id):
             flash("Данные обновлены!", 'success')
         else:
             print('ошибка валидации и доступов' )
-            response_data = {'message': 'validation error', 'code': 'ERROR','validation_errors': form.errors}
-            response =  make_response(jsonify(response_data), 404)
-            result = jsonify(message="null", code="SUCCESS")
+            response_data = {'message': 'validation error', 'code': 'ERROR', 'form_errors': form.errors}
+            # response_data = {'message': 'validation error', 'code': 'ERROR', 'validation_errors': form.data}
+            response =  make_response(jsonify(response_data), 400)
             # response.headers 
             #  contentType: "application/json",
             # dataType: 'json'
 
-
+    print('server response = ',response)
     return response
 
 
