@@ -1,0 +1,75 @@
+{% macro render_field(field, placeholder='', disable=False, field_size=4, hide='True', textarea=False, lines=1) %}
+{% if not (hide == True and (placeholder == '' or placeholder == None or placeholder == 'None')) %}
+<div class = "form-group row">
+    <label for="{{field.name}}" class="col-sm-2 col-form-label control-label" >{{field.label.text}}</label>
+    <div class="col-sm-{{field_size}}">
+        {% if (placeholder == '' or placeholder == None or placeholder == 'None') %}
+        {{field(class="form-control", disabled=disable,  rows=lines) }}
+        {% else %}
+        {{field(class="form-control", value=placeholder, disabled=disable,  rows=lines) }}
+        {% endif %}
+    </div>
+    <div class="col-sm">
+        {% if field.errors %}
+        <ul>
+        {% for error in field.errors %}
+            <li style="color:red;">{{ error}}</li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+{% endmacro %}
+
+
+{% macro render_button(field, id="button", hide='True') %}
+{% if not (hide == True and (placeholder == '' or placeholder == None or placeholder == 'None')) %}
+<div class = "form-group row">
+    <!-- <div class="d-none"> -->
+    <div class="col-sm-2 col-form-label control-label">
+        {{ field(class = "btn btn-primary text-center", id=id ) }}
+    <!-- </div> -->
+    </div>
+</div>
+{% endif %}
+{% endmacro %}
+
+
+
+{% macro render_icon_field(field, placeholder='', icon='', hide='True') %}
+{% if not (hide == True and (placeholder == '' or placeholder == None or placeholder == 'None')) %}
+<div class = "form-group row">
+    <label for="{{field.name}}" class="col-sm-2 col-form-label control-label">
+<div id="{{field.id}}-href">
+    {{field.id}}-href
+    
+    {% if (field.data == '' or field.data == None) %}
+    <a><i class="fa fa-{{icon}}"></i></a>
+    {% else %}
+    <a href="{{field.data}}"><i class="fa fa-{{icon}}"></i></a>
+    {% endif %}
+
+</div>
+
+    </label>
+    
+    <div class="col-sm-4">
+        {% if (field.data == '' or field.data == None) %}
+        {{field(class="form-control") }}
+        {% else %}
+        {{field(class="form-control", value=field.data) }}
+        {% endif %}
+    </div>
+    <div class="col-sm">
+        {% if field.errors %}
+        <ul>
+        {% for error in field.errors %}
+            <li style="color:red;">{{ error}}</li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+{% endmacro %}

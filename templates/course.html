@@ -1,0 +1,169 @@
+{% extends 'base_course.html' %}
+{% block course_title %}
+
+{% endblock %}
+
+
+
+
+
+
+{% block course_content_title %}
+
+{% endblock %}
+
+
+{% block course_content %}
+
+
+<p></p>
+<div class="container">
+    <div class="row">
+            <div class="col-sm-4">
+                <p class="font-weight-bold">Преподаватель курса:</p>
+            </div>
+            <div class="col-sm-8">
+                <a href="{{ url_for('personal_cabinet', user_id=teacher['teacher_id']) }}">
+                    {{teacher['surname']}} {{teacher['name']}} {{teacher['second_name']}}
+                </a>
+            </div>
+        </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <p class="font-weight-bold">Описание курса:</p>
+        </div>
+        <div class="col-sm-8">
+            {{course.course_description}}
+        </div>
+    </div>
+
+</div>
+
+        <div class="container-fluid">
+        <div class="row">
+        <div class="col-sm-6">
+        <b>Старосты курса:</b> 
+        {% if can_edit_responsible_persons == True %}
+        <!-- Модальное окно для добавления старосты курса -->
+        <a class="btn btn-primary btn-sm" href="" data-toggle="modal" data-target="#myModal"
+        data-toggle="tooltip" data-placement="right" title="Добавить старосту курса">
+            <i class="fa fa-plus" style="color:white">
+            </i>
+        </a>
+        <!-- Модальное окно выбора старосты -->
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Добавить старосту</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    
+        <div class="modal-body">
+
+            <div class="list-group">
+                {% for person in possible_responsible_persons %} 
+                <a href="{{ url_for('course', course_id=course.id, added_person_id=person['student_id']) }}" class="list-group-item list-group-item-action">
+                {{person['surname']}} {{person['name']}} {{person['second_name']}}
+                </a>
+            {% endfor %}
+              </div>
+        </div>
+    
+    </div>
+    </div>
+    </div>
+        <!--  -->
+{% endif %}
+        <p></p>
+        {% if responsible_persons != [] %} 
+        <table class="table table-sm">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Студент</th>
+
+                                <!--  -->
+    {% if can_edit_responsible_persons == True %}
+    <!-- Кнопка пуска модальное окно -->  
+        <th scope="col">
+            <!-- <a class="btn btn-primary btn-sm" href="" data-toggle="modal" data-target="#myModal"
+            data-toggle="tooltip" data-placement="right" title="Добавить старосту курса">
+                <i class="fa fa-plus" style="color:white">
+                </i>
+            </a> -->
+        </th>
+
+    {% endif %}
+    <!--  -->
+
+                  </tr>
+                </thead>
+                <tbody>
+
+                {% for person in responsible_persons %}  
+                <tr>
+                    <th scope="row-black color=black">{{loop.index}}</th>
+                <td>
+                    <a href="{{ url_for('personal_cabinet', user_id=person['user_id']) }}">
+                        {{person['surname']}} {{person['name']}} {{person['second_name']}}
+                    </a>
+                </td>
+                {% if can_edit_responsible_persons == True %}
+                <td>
+<!-- Кнопка пуска модальное окно -->
+<a class="btn btn-outline-danger btn-sm" href="" data-toggle="modal" data-target="#myModal{{loop.index}}"
+    data-toggle="tooltip" data-placement="right" title="Удалить старосту курса">
+    <i class="fa fa-trash fa-lg">
+    </i>
+</a>
+<!-- Модальное окно -->
+<div class="modal fade" id="myModal{{loop.index}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Подтвердите удаление</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                #{{loop.index}} {{person['surname']}} {{person['name']}} {{person['second_name']}}
+            </div>
+
+            <div class="modal-footer">
+                <div class="container">
+                    <div class="row justify-content-between">
+                        <div class="col-auto">
+                            <a href="{{ url_for('course', course_id=course.id, deleted_person_id=person['student_id']) }}">
+                                <button type="button" class="btn btn-danger">Удалить</button>
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        <!--  -->
+                </td>
+                {% endif %}
+                </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+              {% endif %} 
+    </div>
+</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,147 @@
+{% extends 'base_course.html' %}
+{% block course_title %}
+
+{% endblock %}
+
+
+
+
+
+
+{% block course_content_title %}
+
+{% endblock %}
+
+
+{% block course_content %}
+
+<!--  -->
+{% if can_edit_hometask == True %}
+<div class="container">
+    <p></p>
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-primary" href="{{ url_for('course_add_hometasks', course_id=course.id) }}" data-toggle="tooltip" data-placement="right"
+                title="Добавить домашнее задание курса">
+                <i class="fa fa-plus" style="color:white">
+                </i>
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+<!--  -->
+<p></p>
+
+
+<div class="container-fluid">
+<div class="row">
+<div class="col-sm-10">
+{% if course_hometasks != [] %} 
+        <table class="table table-sm">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Задание</th>
+                    <th scope="col">Дедлайн</th>
+
+                                <!--  -->
+    {% if can_edit_hometask == True %}
+    <!-- Дополнительый столбец при редактировании -->
+        <th scope="col"></th>
+        <th scope="col"></th>
+    {% endif %}
+    <!--  -->
+
+                  </tr>
+                </thead>
+                <tbody>
+                {% set count = namespace(value=0) %}
+                {% for hometask in course_hometasks %}
+
+                {% if not (is_student == True and ( current_dttm < hometask['start_dttm']) ) %}
+                {% set count.value = count.value + 1 %}
+                <tr>
+                    <th scope="row-black color=black">{{count.value}}</th>
+                <td>
+                    <a href="{{ url_for('course_hometask', course_id=course.id, hometask_id=hometask['course_hometask_id']) }}">
+                        {{hometask['name']}}
+                    </a>
+
+                </td>
+                <td>
+                    {{hometask['trunced_end_dttm']}}
+                </td>
+                {% if can_edit_hometask == True %}
+                <td>
+                    <a class="btn btn-outline-primary btn-sm" href="{{ url_for('course_edit_hometask', course_id=course.id, hometask_id=hometask['course_hometask_id']) }}" data-toggle="tooltip" data-placement="right"
+                    title="Модифицировать домашнее задание">
+                    <i class="fa fa-edit fa-lg">
+                    </i>
+                </a>
+                </td>
+
+                <td>
+<!-- Кнопка пуска модальное окно -->
+<a class="btn btn-outline-danger btn-sm" href="" data-toggle="modal" data-target="#myModal{{count.value}}"
+    data-toggle="tooltip" data-placement="right" title="Удалить домашнее задание">
+    <i class="fa fa-trash fa-lg">
+    </i>
+</a>
+<!-- Модальное окно -->
+<div class="modal fade" id="myModal{{count.value}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Подтвердите удаление</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                #{{count.value}} {{hometask['name']}}
+            </div>
+
+            <div class="modal-footer">
+                <div class="container">
+                    <div class="row justify-content-between">
+                        <div class="col-auto">
+
+                            {#<form method="POST" action="http://127.0.0.1:5000/course/12/hometasks">
+                                <button type="button" class="btn btn-danger"><input type="submit">Удалить</button>
+                                
+                                </form>#}
+
+
+
+                           <a href="{{ url_for('course_hometasks', course_id=course.id, hometask_id=hometask['course_hometask_id']) }}">
+                                <button type="button" class="btn btn-danger">Удалить</button>
+                            </a>
+                            
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        <!--  -->
+                </td>
+                {% endif %}
+                </tr>
+
+                {% endif %}
+                {% endfor %}
+                </tbody>
+              </table>
+              {% endif %} 
+</div>
+</div>
+</div>
+
+{% endblock %}

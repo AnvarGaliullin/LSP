@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block head %}
+{% endblock %}
+
+{% block title %}
+{% block course_title %}
+
+{% endblock %}
+{% endblock %}
+
+
+
+
+
+{% block content_title %}
+{{course.course_name}}
+{% block course_content_title %}
+
+
+{% endblock %}
+{% endblock %}
+
+
+{% block content %}
+
+{% if active_page=='course_description' %}
+    {% set course_description = 'active' %}
+{% endif %}
+{% if active_page=='course_program' %}
+    {% set course_program = 'active' %}
+{% endif %}
+{% if active_page=='course_hometasks' %}
+    {% set course_hometasks = 'active' %}
+{% endif %}
+
+<div class="container">
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+
+            <a class="nav-item nav-link {{course_description}}" id="nav-course_description-tab" href="{{ url_for('course', course_id=course.id) }}" role="tab"
+                aria-controls="nav-course_description" aria-selected="true">Описание</a>
+            <!-- {% if (group_name != None and group_name != '') %} -->
+            <a class="nav-item nav-link {{course_program}}" id="nav-course_program-tab"  href="{{ url_for('course_program', course_id=course.id) }}" role="tab"
+                aria-controls="nav-course_program" aria-selected="false">Программа</a>
+            <!-- {% endif %} -->
+            <a class="nav-item nav-link {{course_hometasks}}" id="nav-course_hometasks-tab" href="{{ url_for('course_hometasks', course_id=course.id) }}" role="tab"
+                aria-controls="nav-course_hometasks" aria-selected="false">Домашние задания</a>
+        </div>
+    </nav>
+</div>
+{% block course_content %}
+
+
+{% endblock %}
+{% endblock %}
