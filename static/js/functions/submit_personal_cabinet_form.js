@@ -2,12 +2,12 @@
 // import send_submitted_form from './send_submitted_form.js'
 // import {send_submitted_form} from './send_submitted_form.js';
 
-require(['jquery', 'send_submitted_form'], function submit_personal_cabinet_form(params) {
+function submit_personal_cabinet_form(params) {
 	// import send_submitted_form from './send_submitted_form.js';
 	console.log('params = ',params)
 	// import('./send_submitted_form.js')
 	console.log('imported')
-
+// send_flask_form
 	// import('./send_submitted_form.js');
 
 	// $.getScript("./send_submitted_form", function() {
@@ -22,7 +22,7 @@ require(['jquery', 'send_submitted_form'], function submit_personal_cabinet_form
 
 //  });
 console.log('!ENDEDE!ss')
-});
+};
 console.log('!!ss')
 // var powerLevel = require('./powerlevel')
 // powerLevel(9050);

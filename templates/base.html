@@ -56,74 +56,24 @@
 
 </head>
 <body>
+        <!-- Import Core JS Files -->
+<script>console.log('start loading core JS files, milliseconds time = ', performance.now())</script>
+        <script src="/static/js/jquery/jquery-3.4.1.js"></script>
+        <script src="/static/js/bootstrap/bootstrap.bundle.js"></script>
+        <script src="/static/js/bootstrap-notify/bootstrap-notify.js"></script>
+<script>console.log('end loading core JS files, milliseconds time = ', performance.now())</script>
+        <script src="/static/js/configure.js"></script>
+<script>console.log('end loading configure JS files, milliseconds time = ', performance.now())</script>
 
-         <!-- require.js -->
+        <!-- Import Utility JS -->
+        <script src="/static/js/functions/send_submitted_form.js"></script>
 
-         <script data-main="/static/js/require/config" src="/static/js/require/require-2.3.6.js" ></script>
-         <script >
-         console.log('before require function')
-         require(['config'], function init_requirements() {
-            //  console.log('before download jquery')
-             require(['jquery', 'bootstrap', 'bootstrap_notify'],function(){
-                 console.log('hehe')
-                //  {% block scripts %}
+        <!-- Import Special for ecah HTML JS -->
+        {% block scripts %}
 
-                //  {% endblock %}
-                 //All scripts should be here
-     $.notifyDefaults({
-                offset: {
-                    x: 20,
-                    y: 70
-                },
-                onShow: function () {
-                    this.css({ 'width': 'auto', 'height': 'auto' });
-                }
-            });
+        {% endblock %}
+<script>console.log('end loading utility JS files, milliseconds time = ', performance.now())</script>
 
-            function notify(parametrs) {
-                message = parametrs.message
-                category = parametrs.category
-                icon = parametrs.icon || ''
-                $.notify({
-                    icon: icon,
-                    message: message
-                }, {
-                    type: category
-                });
-            }
-
-
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-    })
-                 //end scripts
-
-
-             });
-                //  $('body').html('Hello from the other side')
-            //  require(['popper']);
-            //  require(['bootstrap']);
-            //  require(['bootstrap_notify']);
-            //  require(['jqueryFile']);
-            //  console.log('jquery = ', jquery);
-             console.log('after download jquery');
-         });
-         console.log('after require function');
-
-
-    
-
-
-         </script>
-<script>
-console.log('go next srcipt');
-</script>
-
-      
-<!-- Bootstrap - Notify  END-->
-<!-- Send Submitted Flask Form to Server -->
-    <!-- <script src="/static/js/functions/send_submitted_form.js"></script>
-    <script src="/static/js/functions/submit_personal_cabinet_form.js"></script> -->
 
 
 
@@ -133,7 +83,7 @@ console.log('go next srcipt');
                 <a href="{{ url_for('index') }}">
                 <img src="/static/upper_logo.jpg" class="img-fluid" height="64" width="64"  class="d-inline-block align-top" alt="">
                 </a>
-                <a href="{{ url_for('index') }}"><button class="btn" type="button" data-toggle="tooltip" data-placement="bottom" title="Информация о пользователе">Learning Managment System</button></a>
+                <a href="{{ url_for('index') }}"><button class="btn" type="button" data-toggle="tooltip" data-placement="bottom" title="Главная страница">Learning Managment System</button></a>
             </div>
         </div>
         

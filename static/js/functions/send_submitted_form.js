@@ -1,4 +1,4 @@
-function send_submitted_form(params) {
+function send_flask_form(params) {
 	console.log('i was called send form')
 	console.log('inside_params = ',params)
 	let form_id = params.form_id
@@ -19,12 +19,15 @@ function send_submitted_form(params) {
 
 				for (let field in response_form_data) {
 					let icon_href = '#' + field + '-href > a' // Search for icon in {{render_field}} and change it href
-					console.log('icon_href = ', icon_href)
-					// console.log('$(icon_href).$(a) = ',$(icon_href).$(a).attr("href"))
-					console.log('&&')
-					// console.log('response_form_data[field] = ',response_form_data[field])
-					$(icon_href).$(a).attr( "href", response_form_data[field]);
-					console.log('suc href')
+					console.log('response_form_data[' + field + '] = '+response_form_data[field])
+					if (response_form_data[field] == '') {
+						console.log('is null should remove attr!!');
+						$(icon_href).removeAttr("href");
+					} else {
+						console.log('NOT null should add attr!!');
+						$(icon_href).attr("href", response_form_data[field]);
+					}
+
 				   }
 			}
 		

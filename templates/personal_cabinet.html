@@ -24,10 +24,9 @@ Personal Cabinet
 
 {% block content %}
 <br>
-<!-- <script src="/static/js/functions/submit_personal_cabinet_form.js"></script> -->
-<!-- <script src="/static/js/functions/submit_personal_cabinet_form.js"></script> -->
-{% block scripts %}
 
+{% block scripts %}
+<script src="/static/js/functions/submit_personal_cabinet_form.js"></script>
 {% endblock %}
 
 
@@ -64,7 +63,7 @@ Personal Cabinet
 
         <div class = "form-group row">
             <div class="col-sm-2 col-form-label control-label">
-                <button onclick="submit_personal_cabinet_form({
+                <button onclick="send_flask_form({
                     url:'{{ url_for('edit_user_info', user_id=user.id) }}',
                     request_type:'PUT',
                     form_id: 'form-personal-cabinet',

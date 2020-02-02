@@ -43,11 +43,13 @@
     <label for="{{field.name}}" class="col-sm-2 col-form-label control-label">
 <div id="{{field.id}}-href">
     {{field.id}}-href
+    
     {% if (field.data == '' or field.data == None) %}
-        <i class="fa fa-{{icon}}"></i>
+    <a><i class="fa fa-{{icon}}"></i></a>
     {% else %}
-        <a href="{{field.data}}"><i class="fa fa-{{icon}}"></i></a>
+    <a href="{{field.data}}"><i class="fa fa-{{icon}}"></i></a>
     {% endif %}
+
 </div>
 
     </label>
